@@ -1,0 +1,173 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+.wrapper {
+	/* max-width: 960px; */
+	width: 100vw;
+	height: 100vh;
+	/* margin: 0 auto; */
+	padding: 0 10px;
+	font-family: 'Roboto', sans-serif;
+	background: #F0F0F0;
+}
+
+.inner {
+	padding: 5px;
+}
+
+h2 {
+	margin-bottom: 10px;
+}
+
+input {
+	padding: 5px 10px;
+	font-size: ;
+}
+/*------------Main styles-----------------*/
+.add-task-board {
+	display: flex;
+	justify-content: flex-start;
+	margin-bottom: 20px;
+}
+
+.add-task-board__form {
+	display: flex;
+	justify-content: space-between;
+	width: 30%;
+	margin-right: 15px;
+}
+
+.task-input {
+	width: 75%;
+}
+
+.date-input  {
+	width: 20%;
+}
+
+.content {
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.board {
+	width: 30%;
+	min-height: 300px;
+	background: #FFFFFF;
+	border: 1px solid #F1F1F1;
+	box-shadow: 0 0 6px 18px #EDEDED;
+	border-radius: 5px;
+}
+
+/* .todo-board {
+	background: #FF7F50;
+}
+
+.doing-board {
+	background: #fafc8d;
+}
+
+.done-board {
+	background: #4bbf6b;
+} */
+
+.list {
+	display: flex;
+	flex-direction: column;
+}
+
+.task {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 10px;
+	padding: 5px;
+	background: #4BBF6B;
+	border-radius: 2px;
+}
+
+.task p {
+	margin-right: 5px;
+}
+
+.icon-container {
+	display: flex;
+	justify-content: space-between;
+}
+
+.icon {
+	position: relative;
+	width: 25px;
+	height: 25px;
+	margin: 1px;
+	background: #ffffff;
+	border: none;
+	outline: none;
+	cursor: pointer;
+}
+
+.close-icon {
+	margin-right: 8px;
+}
+
+.close-icon::before {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 12.5%;
+	width: 20px;
+	height: 2px;
+	background: #4BBF6B;
+	transform: rotate(45deg);
+	border-radius: 2px;
+}
+
+.close-icon::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 12.5%;
+	width: 20px;
+	height: 2px;
+	background: #4BBF6B;
+	transform: rotate(135deg);
+	border-radius: 2px;
+}
+
+.remove-icon::before {
+	content: "";
+	position: absolute;
+	top: calc(50% - 1px);
+	left: 2px;
+	width: 18px;
+	height: 2px;
+	background: #4BBF6B;
+	border-radius: 2px;
+}
+
+.remove-icon::after {
+	content: "";
+	position: absolute;
+	top: 25%;
+	left: 25%;
+	width: 10px;
+	height: 10px;
+	border: 2px solid #4BBF6B;
+	border-bottom: none;
+	border-left: none;
+	border-radius: 2px;
+	transform: rotate(45deg);
+
+}
+
+.delete-button,
+.add-button {
+	padding: 5px 10px;
+	font-size: 16px;
+	border: 1px solid #4BBF6B;
+	border-radius: 3px;
+}
