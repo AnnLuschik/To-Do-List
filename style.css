@@ -24,7 +24,6 @@ h2 {
 
 input {
 	padding: 5px 10px;
-	font-size: ;
 }
 /*------------Main styles-----------------*/
 .add-task-board {
@@ -36,16 +35,16 @@ input {
 .add-task-board__form {
 	display: flex;
 	justify-content: space-between;
-	width: 30%;
+	width: 50%;
 	margin-right: 15px;
 }
 
 .task-input {
-	width: 75%;
+	width: 70%;
 }
 
 .date-input  {
-	width: 20%;
+	width: 27%;
 }
 
 .content {
