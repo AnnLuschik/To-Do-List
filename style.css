@@ -111,8 +111,13 @@ input {
 	border-radius: 2px;
 }
 
-.task p {
+.task__text {
 	margin-right: 5px;
+}
+
+.task__time {
+	margin-right: 5px;
+	font-weight: 700;
 }
 
 .icon-container {
