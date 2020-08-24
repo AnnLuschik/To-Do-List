@@ -17,7 +17,10 @@
 		<main>
 			<div class="add-task-board">
 				<form class="add-task-board__form" name="mainForm">
-					<input class="task-input" type="text" name="task">
+					<div>
+						<input class="task-input" id="task-input" type="text" name="task" required>
+						<label for="task-input">What do you want to do?</label>
+					</div>
 					<input class="date-input" type="date" name="date">
 				</form>
 				<button class="add-button">Add task</button>
