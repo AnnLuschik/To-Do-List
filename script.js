@@ -66,6 +66,7 @@ function getTask() {
 	return task;
 }
 /*---------------------------------------------Events------------------------------*/
+// Добавление задачи
 addTaskButton.addEventListener('click', function() {
 	let newTask = {
 		task: addTaskInput.value,
@@ -80,6 +81,21 @@ addTaskButton.addEventListener('click', function() {
 		addTaskDateInput.value = '';
 	} else alert('All fields must be filled out');
 });
+
+// Удаление задачи
+document.querySelectorAll('.close-icon').forEach(item => {
+	item.addEventListener('click', function() {
+		this.closest('li').remove();
+	});
+});
+
+// Удалить все задачи из блока
+document.querySelectorAll('.delete-button').forEach(item => {
+	item.addEventListener('click', function() {
+		Array.from(this.previousElementSibling.children).forEach(item => item.remove());
+	});
+});
+
 
 
 
