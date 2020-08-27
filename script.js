@@ -14,6 +14,31 @@ function getNoEmptyFields(object) {
 	return true;
 }
 
+// Get number of tasks and overwrite to the title of the board
+function getTaskNumber(list) {
+	let number = list.length;
+	return number;
+}
+
+function createTaskNumber(title) {
+	title.innerHTML = getTaskNumber(title.parentElement.nextElementSibling.children);
+}
+
+document.querySelectorAll('h2').forEach(item => createTaskNumber(item.firstElementChild));
+
+let mutationObserver = new MutationObserver(mutationList => {
+	mutationList.forEach(mutation => {
+		if(mutation.target.tagName === 'UL') {
+			createTaskNumber(mutation.target.previousElementSibling.firstElementChild);
+		}
+	});
+});
+
+mutationObserver.observe(document.querySelector('.content'), {
+	childList: true,
+	subtree: true,
+});
+
 // Create 'delete' and 'remove' icons
 function createDeleteIcon() {
 	let icon = document.createElement('button');
@@ -111,3 +136,4 @@ document.body.addEventListener('click', function() {
 		if(event.target.closest('.board').classList.contains('done-board')) event.target.remove();
 	}
 });
+
