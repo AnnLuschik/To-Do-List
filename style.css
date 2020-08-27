@@ -124,11 +124,16 @@ input {
 	justify-content: space-around;
 	height: 100%;
 }
+
 .icon-container {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-around;
 	height: 100%;
+}
+
+.done-board .icon-container {
+	justify-content: start;
 }
 
 .icon {

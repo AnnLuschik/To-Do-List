@@ -89,13 +89,18 @@ document.querySelectorAll('.close-icon').forEach(item => {
 	});
 });
 
-// Удалить все задачи из блока
+// Удаление всех задач из блока
 document.querySelectorAll('.delete-button').forEach(item => {
 	item.addEventListener('click', function() {
 		Array.from(this.previousElementSibling.children).forEach(item => item.remove());
 	});
 });
 
-
-
+// Перемещение задачи в следующий блок
+document.querySelectorAll('.remove-icon').forEach(item => {
+	item.addEventListener('click', function() {
+		item.closest('.board').nextElementSibling.children[1].append(item.closest('.task'));
+		if(item.closest('.board').classList.contains('done-board')) item.remove();
+	});
+});
 
