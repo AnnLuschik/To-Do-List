@@ -83,24 +83,31 @@ addTaskButton.addEventListener('click', function() {
 });
 
 // Удаление задачи
-document.querySelectorAll('.close-icon').forEach(item => {
-	item.addEventListener('click', function() {
-		this.closest('li').remove();
-	});
-});
+document.body.addEventListener('click', function(event) {
+	if(!event.target.classList.contains('close-icon')) {
+		return false;
+	}
+	event.target.closest('li').remove();
+});	
 
 // Удаление всех задач из блока
-document.querySelectorAll('.delete-button').forEach(item => {
-	item.addEventListener('click', function() {
-		Array.from(this.previousElementSibling.children).forEach(item => item.remove());
-	});
+document.body.addEventListener('click', function(event) {
+	if(!event.target.classList.contains('delete-button')) {
+		return false;
+	}
+	Array.from(event.target.previousElementSibling.children).forEach(item => item.remove());
 });
 
-// Перемещение задачи в следующий блок
-document.querySelectorAll('.remove-icon').forEach(item => {
-	item.addEventListener('click', function() {
-		item.closest('.board').nextElementSibling.children[1].append(item.closest('.task'));
-		if(item.closest('.board').classList.contains('done-board')) item.remove();
-	});
+// Перемещение задачи в следующий блок, ограничение на 5 задач в 'Doing'	
+document.body.addEventListener('click', function() {
+	if(!event.target.classList.contains('remove-icon')) {
+		return false;
+	}
+	let board = event.target.closest('.board');
+	if(board.classList.contains('todo-board') && board.nextElementSibling.children[1].children.length === 5) {
+		alert(`Doing board cannot contain more than 5 tasks`);
+	} else {
+		board.nextElementSibling.children[1].append(event.target.closest('.task'));
+		if(event.target.closest('.board').classList.contains('done-board')) event.target.remove();
+	}
 });
-
