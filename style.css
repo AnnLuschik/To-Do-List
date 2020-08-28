@@ -131,10 +131,6 @@ input {
 	height: 100%;
 }
 
-.done-board .icon-container {
-	justify-content: start;
-}
-
 .icon {
 	position: relative;
 	width: 25px;

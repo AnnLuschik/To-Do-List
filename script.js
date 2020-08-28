@@ -131,9 +131,10 @@ document.body.addEventListener('click', function() {
 	let board = event.target.closest('.board');
 	if(board.classList.contains('todo-board') && board.nextElementSibling.children[1].children.length === 5) {
 		alert(`Doing board cannot contain more than 5 tasks`);
+	} else if(board.classList.contains('done-board')) {
+		board.parentElement.firstElementChild.children[1].append(event.target.closest('.task'));
 	} else {
 		board.nextElementSibling.children[1].append(event.target.closest('.task'));
-		if(event.target.closest('.board').classList.contains('done-board')) event.target.remove();
 	}
 });
 
