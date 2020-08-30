@@ -132,13 +132,17 @@ document.addEventListener('click', function(event) {
 		let deleteTask;
 		let deleteAll;
 		event.target.classList.contains('delete-button') ? deleteAll = true : deleteTask = true;
-		openModalWindow().then(function(resolve) {
-			if(deleteAll) Array.from(event.target.previousElementSibling.children).forEach(item => item.remove());
-			if(deleteTask) event.target.closest('li').remove();
-			modalWindow.style.display = 'none';
-		}, function(reject) {
-			modalWindow.style.display = 'none';
-		})
+		if(event.target.closest('.board').children[1].children.length === 0) {
+			return false; 
+		} else {
+			openModalWindow().then(function(resolve) {
+				if(deleteAll) Array.from(event.target.previousElementSibling.children).forEach(item => item.remove());
+				if(deleteTask) event.target.closest('li').remove();
+				modalWindow.style.display = 'none';
+			}, function(reject) {
+				modalWindow.style.display = 'none';
+			});
+		}
 	} else {
 		if(event.target.classList.contains('delete-button')) {
 			Array.from(event.target.previousElementSibling.children).forEach(item => item.remove());
