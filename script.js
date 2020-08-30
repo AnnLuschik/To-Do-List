@@ -4,9 +4,10 @@ let addTaskDateInput = addTaskForm.elements.date;
 let addTaskButton = document.querySelector('.add-button');
 let taskList = document.querySelector('.list');
 let todoBoard = document.querySelector('.todo-board');
+let modalWindow = document.querySelector('.modal');
 
 /*-----------------------------------------Functions------------------------------------------*/
-// Check empty fields
+// Проверка на пустые поля
 function getNoEmptyFields(object) {
 	for(let key in object) {
 		if (object[key] === '') return false;
@@ -14,7 +15,7 @@ function getNoEmptyFields(object) {
 	return true;
 }
 
-// Get number of tasks and overwrite to the title of the board
+// Получение количества задач и запись в заголовок блока
 function getTaskNumber(list) {
 	let number = list.length;
 	return number;
@@ -39,7 +40,7 @@ mutationObserver.observe(document.querySelector('.content'), {
 	subtree: true,
 });
 
-// Create 'delete' and 'remove' icons
+// Создание 'delete' и 'remove' кнопок
 function createDeleteIcon() {
 	let icon = document.createElement('button');
 	icon.classList.add('icon', 'close-icon');
@@ -59,7 +60,7 @@ function createIconContainer() {
 	return container;
 }
 
-// Create text part of new task
+// Создание текстовой части новой задачи
 function createTaskTimeElement() {
 	let taskDate = document.createElement('p');
 	taskDate.classList.add('task__time');
@@ -82,13 +83,29 @@ function createTextContainer() {
 	return container;
 }
 
-// Add new task 
+// Добавить новую задачу
 function getTask() {
 	let task = document.createElement('li');
 	task.classList.add('task');
 	task.append(createTextContainer());
 	task.append(createIconContainer());	
 	return task;
+}
+
+// Открыть модальное окно
+function openModalWindow() {
+	modalWindow.style.display = 'flex';
+	let promiseModal = new Promise(function(resolve, reject) {
+		modalWindow.addEventListener('click', function(event) {
+			if(event.target.classList.contains('button-container__confirm')) {
+				resolve (true);
+			} 
+			if(event.target.classList.contains('button-container__cancel')) {
+				reject (false);
+			}
+		});
+	});
+	return promiseModal;
 }
 /*---------------------------------------------Events------------------------------*/
 // Добавление задачи
@@ -107,24 +124,32 @@ addTaskButton.addEventListener('click', function() {
 	} else alert('All fields must be filled out');
 });
 
-// Удаление задачи
-document.body.addEventListener('click', function(event) {
-	if(!event.target.classList.contains('close-icon')) {
+// Удаление одной задачи либо всех задач из блока, вызов модального окна для подтверждения в блоке Doing
+document.addEventListener('click', function(event) {
+	if(!(event.target.classList.contains('delete-button') || event.target.classList.contains('close-icon'))) {
 		return false;
+	} else if (event.target.closest('.board').classList.contains('doing-board')) {
+		let deleteTask;
+		let deleteAll;
+		event.target.classList.contains('delete-button') ? deleteAll = true : deleteTask = true;
+		openModalWindow().then(function(resolve) {
+			if(deleteAll) Array.from(event.target.previousElementSibling.children).forEach(item => item.remove());
+			if(deleteTask) event.target.closest('li').remove();
+			modalWindow.style.display = 'none';
+		}, function(reject) {
+			modalWindow.style.display = 'none';
+		})
+	} else {
+		if(event.target.classList.contains('delete-button')) {
+			Array.from(event.target.previousElementSibling.children).forEach(item => item.remove());
+		} else {
+			event.target.closest('li').remove();
+		}
 	}
-	event.target.closest('li').remove();
-});	
-
-// Удаление всех задач из блока
-document.body.addEventListener('click', function(event) {
-	if(!event.target.classList.contains('delete-button')) {
-		return false;
-	}
-	Array.from(event.target.previousElementSibling.children).forEach(item => item.remove());
 });
 
 // Перемещение задачи в следующий блок, ограничение на 5 задач в 'Doing'	
-document.body.addEventListener('click', function() {
+document.addEventListener('click', function() {
 	if(!event.target.classList.contains('remove-icon')) {
 		return false;
 	}
@@ -137,4 +162,3 @@ document.body.addEventListener('click', function() {
 		board.nextElementSibling.children[1].append(event.target.closest('.task'));
 	}
 });
-
