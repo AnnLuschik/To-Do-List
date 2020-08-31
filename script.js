@@ -104,6 +104,7 @@ function getTask() {
 // Открыть модальное окно
 function openModalConfirmWindow() {
 	modalConfirmWindow.style.display = 'flex';
+	document.querySelector('.fogging').style.display = 'block';
 	let promiseModal = new Promise(function(resolve, reject) {
 		modalConfirmWindow.addEventListener('click', function(event) {
 			if(event.target.classList.contains('button__confirm')) {
@@ -119,6 +120,7 @@ function openModalConfirmWindow() {
 
 function openModalAlertWindow() {
 	modalAlertWindow.style.display = 'flex';
+	document.querySelector('.fogging').style.display = 'block';
 }
 /*---------------------------------------------Events------------------------------*/
 // Добавление задачи
@@ -153,8 +155,10 @@ document.addEventListener('click', function(event) {
 				if(deleteAll) Array.from(event.target.previousElementSibling.children).forEach(item => item.remove());
 				if(deleteTask) event.target.closest('li').remove();
 				modalConfirmWindow.style.display = 'none';
+				document.querySelector('.fogging').style.display = 'none';
 			}, function(reject) {
 				modalConfirmWindow.style.display = 'none';
+				document.querySelector('.fogging').style.display = 'none';
 			});
 		}
 	} else {
