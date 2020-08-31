@@ -4,7 +4,8 @@ let addTaskDateInput = addTaskForm.elements.date;
 let addTaskButton = document.querySelector('.add-button');
 let taskList = document.querySelector('.list');
 let todoBoard = document.querySelector('.todo-board');
-let modalWindow = document.querySelector('.modal');
+let modalConfirmWindow = document.querySelector('.modal-confirm');
+let modalAlertWindow = document.querySelector('.modal-alert');
 
 /*-----------------------------------------Functions------------------------------------------*/
 // Проверка на пустые поля
@@ -93,19 +94,23 @@ function getTask() {
 }
 
 // Открыть модальное окно
-function openModalWindow() {
-	modalWindow.style.display = 'flex';
+function openModalConfirmWindow() {
+	modalConfirmWindow.style.display = 'flex';
 	let promiseModal = new Promise(function(resolve, reject) {
-		modalWindow.addEventListener('click', function(event) {
-			if(event.target.classList.contains('button-container__confirm')) {
+		modalConfirmWindow.addEventListener('click', function(event) {
+			if(event.target.classList.contains('button__confirm')) {
 				resolve (true);
 			} 
-			if(event.target.classList.contains('button-container__cancel')) {
+			if(event.target.classList.contains('button__cancel')) {
 				reject (false);
 			}
 		});
 	});
 	return promiseModal;
+}
+
+function openModalAlertWindow() {
+	modalAlertWindow.style.display = 'flex';
 }
 /*---------------------------------------------Events------------------------------*/
 // Добавление задачи
@@ -135,12 +140,12 @@ document.addEventListener('click', function(event) {
 		if(event.target.closest('.board').children[1].children.length === 0) {
 			return false; 
 		} else {
-			openModalWindow().then(function(resolve) {
+			openModalConfirmWindow().then(function(resolve) {
 				if(deleteAll) Array.from(event.target.previousElementSibling.children).forEach(item => item.remove());
 				if(deleteTask) event.target.closest('li').remove();
-				modalWindow.style.display = 'none';
+				modalConfirmWindow.style.display = 'none';
 			}, function(reject) {
-				modalWindow.style.display = 'none';
+				modalConfirmWindow.style.display = 'none';
 			});
 		}
 	} else {
@@ -159,10 +164,14 @@ document.addEventListener('click', function() {
 	}
 	let board = event.target.closest('.board');
 	if(board.classList.contains('todo-board') && board.nextElementSibling.children[1].children.length === 5) {
-		alert(`Doing board cannot contain more than 5 tasks`);
+		openModalAlertWindow();
 	} else if(board.classList.contains('done-board')) {
 		board.parentElement.firstElementChild.children[1].append(event.target.closest('.task'));
 	} else {
 		board.nextElementSibling.children[1].append(event.target.closest('.task'));
 	}
+});
+
+document.querySelector('.button__alert-confirm').addEventListener('click', function(event) {
+	event.target.closest('.modal').style.display = 'none';
 });
