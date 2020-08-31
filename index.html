@@ -19,11 +19,11 @@
 			<div class="add-task-board">
 				<form class="add-task-board__form" name="mainForm" onsubmit="return false">
 					<div class="add-task-board-form__container task-container">
-						<input class="task-input" id="task-input" type="text" name="task" placeholder="What do you want to do?">
+						<input class="task-input required-input" id="task-input" type="text" name="task" placeholder="What do you want to do?">
 						<label for="task-input">Task Name</label>
 					</div>
 					<div class="add-task-board-form__container date-container">
-						<input class="date-input" id="date-input" type="date" name="date" min="now">
+						<input class="date-input required-input" id="date-input" type="date" name="date" min="now">
 						<label for="date-input">Date</label>
 					</div>
 					<button class="add-button">Create task</button>
@@ -102,6 +102,17 @@
 						</li>
 					</ul>
 					<button class="delete-button">Delete all</button>
+					<div class="modal modal-change-date">
+						<p>You can change the date</p>
+						<form name="modalDateForm">
+							<input type="date" name="dateInput">
+							<label></label>
+						</form>
+						<div class="button-container">
+							<button class="button__confirm">Change</button>
+							<button class="button__cancel">Cancel</button>
+						</div>
+					</div>
 				</div>
 			</div>
 		</main>

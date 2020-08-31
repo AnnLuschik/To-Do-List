@@ -91,7 +91,7 @@ h2 {
 	color: #E46472;
 }
 
-.add-task-board__form input {
+input {
 	height: 35px;
 	padding: 5px 10px;
 	font-size: 16px;
@@ -290,9 +290,13 @@ h2 {
 
 .modal-confirm {
 	display: none;
-	justify-content: flex-end;
+	justify-content: center;
 	align-items: center;
 	padding: 5px 15px;
+}
+
+.modal-confirm p {
+	margin-bottom: 30px;
 }
 
 .modal-alert {
@@ -304,9 +308,11 @@ h2 {
 }
 
 .modal-change-date {
-	display: flex;
+	display: none;
+	flex-direction: column;
 	justify-content: space-around;
 	align-items: center;
+	padding: 10px;
 }
 
 .button__alert-confirm {
@@ -317,14 +323,14 @@ h2 {
 	display: flex;
 	justify-content: space-between;
 	width: 100%;
-	padding: 45px 20px;
+	padding: 10px 20px;
 }
 
 .button__confirm,
 .button__cancel {
 	min-width: 75px;
 	padding: 10px 15px;
-	font-size: 18px;
+	font-size: 16px;
 	color: #ffffff;
 	background: #E46472;
 	border: none;

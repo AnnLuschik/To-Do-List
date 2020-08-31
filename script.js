@@ -3,19 +3,40 @@ let addTaskInput = addTaskForm.elements.task;
 let addTaskDateInput = addTaskForm.elements.date;
 let addTaskButton = document.querySelector('.add-button');
 
+let changeDateForm = document.forms.modalDateForm;
+let changeDateInput = changeDateForm.elements.dateInput;
+
 let taskList = document.querySelector('.list');
 let todoBoard = document.querySelector('.todo-board');
 
 let modalConfirmWindow = document.querySelector('.modal-confirm');
 let modalAlertWindow = document.querySelector('.modal-alert');
+let modalChangeWindow = document.querySelector('.modal-change-date');
 
 // Установка минимальной даты в поле ввода
-document.querySelector('.date-input').min = new Date().toISOString().split('T')[0];
+document.querySelectorAll('input[type=date]').forEach(item => {
+	item.min = new Date().toISOString().split('T')[0];
+});
 
-// Перевод даты в формат dd.mm.yyyy
-function toLocalDate() {
-	let localDate = addTaskDateInput.value.split('-');
+// Перевод даты введённой в поле, в формат dd.mm.yyyy
+function toLocalDate(input) {
+	let localDate = input.value.split('-');
 	return localDate.reverse().join('.');
+}
+
+// Перевод даты в формат yyyy-mm-dd
+function fromLocalDate(date) {
+	let newDate = new Date();
+	let currentDate = date.split('.');
+	newDate.setFullYear(currentDate[2], currentDate[1], currentDate[0]);
+	return newDate;
+}
+
+// Сравнение двух дат
+function compareDate(date) {
+	let today = new Date();
+	let userDate = fromLocalDate(date);
+	userDate >= today ? true : false;
 }
 
 // Проверка на пустые поля
@@ -75,7 +96,7 @@ function createIconContainer() {
 function createTaskTimeElement() {
 	let taskDate = document.createElement('p');
 	taskDate.classList.add('task__time');
-	taskDate.append(document.createTextNode(toLocalDate()));
+	taskDate.append(document.createTextNode(toLocalDate(addTaskDateInput)));
 	return taskDate;
 }
 
@@ -103,7 +124,7 @@ function getTask() {
 	return task;
 }
 
-// Открыть модальное окно
+// Открыть модальное окно для подтверждения удаления
 function openModalConfirmWindow() {
 	modalConfirmWindow.style.display = 'flex';
 	document.querySelector('.fogging').style.display = 'block';
@@ -120,9 +141,39 @@ function openModalConfirmWindow() {
 	return promiseModal;
 }
 
+// Открыть модальное окно с предупреждением о лимите в 5 задач в блоке DOING
 function openModalAlertWindow() {
 	modalAlertWindow.style.display = 'flex';
 	document.querySelector('.fogging').style.display = 'block';
+}
+
+// Открыть модальное окно для смены даты при переносе задачи из DONE в TO DO
+function openModalChangeDateWindow() {
+	modalChangeWindow.style.display = 'flex';
+	document.querySelector('.fogging').style.display = 'block';
+
+	let promiseModal = new Promise(function(resolve, reject) {
+		modalChangeWindow.addEventListener('click', function(event) {
+			if(event.target.classList.contains('button__confirm')) {
+				if(changeDateInput.value === '') {
+					changeDateInput.classList.add('empty-field');
+				} else {
+					resolve (toLocalDate(changeDateInput));
+				}
+			} 
+			if(event.target.classList.contains('button__cancel')) {
+				reject (false);
+			}
+		});
+	});
+	return promiseModal;
+}
+
+// Закрыть модальное окно
+function closeModalWindow(window) {
+	window.style.display = 'none';
+	document.querySelector('.fogging').style.display = 'none';
+	if(window.classList.contains('modal-change-date')) changeDateForm.reset();
 }
 /*---------------------------------------------Events------------------------------*/
 // Добавление задачи
@@ -148,7 +199,7 @@ addTaskButton.addEventListener('click', function() {
 
 // Выделение незаполненного обязательного поля
 document.addEventListener('blur', function(event) {
-	if(event.target.tagName !== 'INPUT') {
+	if(!event.target.classList.contains('required-input')) {
 		return;
 	}
 	if(event.target.value === '') {
@@ -174,11 +225,9 @@ document.addEventListener('click', function(event) {
 			openModalConfirmWindow().then(function(resolve) {
 				if(deleteAll) Array.from(event.target.previousElementSibling.children).forEach(item => item.remove());
 				if(deleteTask) event.target.closest('li').remove();
-				modalConfirmWindow.style.display = 'none';
-				document.querySelector('.fogging').style.display = 'none';
+				closeModalWindow(modalConfirmWindow);
 			}, function(reject) {
-				modalConfirmWindow.style.display = 'none';
-				document.querySelector('.fogging').style.display = 'none';
+				closeModalWindow(modalConfirmWindow);
 			});
 		}
 	} else {
@@ -190,16 +239,29 @@ document.addEventListener('click', function(event) {
 	}
 });
 
-// Перемещение задачи в следующий блок, ограничение на 5 задач в 'Doing'
-document.addEventListener('click', function() {
+// Перемещение задачи в следующий блок, ограничение на 5 задач в 'Doing', вызов модального окна для изменения даты.
+// Если дата задания меньше текущей, смена обязательна
+document.addEventListener('click', function(event) {
 	if(!event.target.classList.contains('remove-icon')) {
 		return;
 	}
 	let board = event.target.closest('.board');
+	let task = event.target.closest('.task');
 	if(board.classList.contains('todo-board') && board.nextElementSibling.children[1].children.length === 5) {
 		openModalAlertWindow();
 	} else if(board.classList.contains('done-board')) {
-		board.parentElement.firstElementChild.children[1].append(event.target.closest('.task'));
+		openModalChangeDateWindow().then(function(resolve) {
+			task.firstElementChild.firstElementChild.innerHTML = `${resolve}`;
+			board.parentElement.firstElementChild.children[1].append(task);
+			closeModalWindow(modalChangeWindow);
+		}, function(reject) {
+			if(!compareDate(task.firstElementChild.firstElementChild.innerHTML)) {
+				let today = new Date().toISOString().split('T')[0].split('-').reverse().join('.');
+				task.firstElementChild.firstElementChild.innerHTML = `${today}`;
+			}
+			closeModalWindow(modalChangeWindow);
+			board.parentElement.firstElementChild.children[1].append(task);
+		});
 	} else {
 		board.nextElementSibling.children[1].append(event.target.closest('.task'));
 	}
