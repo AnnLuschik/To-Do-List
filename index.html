@@ -16,14 +16,11 @@
 		
 		<main>
 			<div class="add-task-board">
-				<form class="add-task-board__form" name="mainForm">
-					<div>
-						<input class="task-input" id="task-input" type="text" name="task" maxlength="150" required>
-						<label for="task-input">What do you want to do?</label>
-					</div>
+				<form class="add-task-board__form" name="mainForm" onsubmit="return false">
+					<input class="task-input" type="text" name="task" maxlength="150" placeholder="What do you want to do?">
 					<input class="date-input" type="date" name="date" min="now">
+					<button class="add-button">Create task</button>
 				</form>
-				<button class="add-button">Create task</button>
 			</div>
 			
 			<div class="content inner">

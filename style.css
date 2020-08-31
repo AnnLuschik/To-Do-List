@@ -51,13 +51,7 @@ input {
 .add-task-board__form {
 	display: flex;
 	justify-content: space-between;
-	width: 50%;
-	margin-right: 15px;
-}
-
-.add-task-board__form div {
-	position: relative;
-	width: 70%;
+	width: 75%;
 }
 
 .add-task-board__form input {
@@ -65,15 +59,6 @@ input {
 	border: 1px solid #555555;
 	border-radius: 15px;
 	outline: none;
-}
-
-.add-task-board__form div label {
-	position: absolute;
-	top: 20%;
-	left: 10px;
-	color: #555555;
-	opacity: 0.5;
-	cursor: text;
 }
 
 .add-button {
@@ -90,15 +75,7 @@ input {
 }
 
 .task-input {
-	width: 100%;
-}
-
-.task-input:focus + label {
-	opacity: 0;
-}
-
-.task-input:valid + label {
-	opacity: 0;
+	width: 50%;
 }
 
 .date-input  {
