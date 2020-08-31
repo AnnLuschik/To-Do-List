@@ -5,8 +5,8 @@
 }
 
 .wrapper {
-	width: 100vw;
-	height: 100vh;
+	width: 100%;
+	min-height: 100vh;
 	padding: 0 10px;
 	font-family: 'Roboto', sans-serif;
 	background: #222429;
@@ -47,9 +47,6 @@ h2 {
 	color: #FFFFFF;
 }
 
-input {
-	padding: 5px 10px;
-}
 /*------------Main styles-----------------*/
 .add-task-board {
 	display: flex;
@@ -64,15 +61,64 @@ input {
 
 .add-task-board__form {
 	display: flex;
-	justify-content: space-between;
-	width: 75%;
+	flex-wrap: wrap;
+	justify-content: space-around;
+	align-items: center;
+	width: 100%;
+	padding: 0 20px;
+}
+
+.add-task-board-form__container {
+	display: flex;
+	flex-direction: column-reverse;
+	justify-content: center;
+	align-items: start;
+}
+
+.task-container {
+	position: relative;
+	width: 50%;
+}
+
+.date-container {
+	position: relative;
+	width: 20%;
+}
+
+.add-task-board-form__container label {
+	margin: 0 0 10px 10px;
+	font-weight: 700;
+	color: #E46472;
 }
 
 .add-task-board__form input {
 	height: 35px;
+	padding: 5px 10px;
+	font-size: 16px;
+	font-family: inherit;
 	border: 1px solid #555555;
 	border-radius: 15px;
 	outline: none;
+}
+
+.empty-field {
+	box-shadow: inset 0 0 8px #E46472;
+}
+
+.empty-field-label::before {
+	content: "* This field is required";
+	position: absolute;
+	top: 0;
+	right: 0;
+	color: red;
+}
+
+.task-input {
+	width: 100%;
+}
+
+.date-input {
+	width: 100%;
 }
 
 .add-button {
@@ -88,12 +134,13 @@ input {
 	cursor: pointer;
 }
 
-.task-input {
-	width: 50%;
+.add-button:hover,
+.add-button:focus {
+	background: #f77683;
 }
 
-.date-input  {
-	width: 27%;
+.add-button:active {
+	background: #e04754;
 }
 
 .content {
@@ -256,6 +303,12 @@ input {
 	text-align: center;
 }
 
+.modal-change-date {
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+}
+
 .button__alert-confirm {
 	padding: 5px 25px;
 }
@@ -270,5 +323,12 @@ input {
 .button__confirm,
 .button__cancel {
 	min-width: 75px;
-	padding: 5px 10px;
+	padding: 10px 15px;
+	font-size: 18px;
+	color: #ffffff;
+	background: #E46472;
+	border: none;
+	border-radius: 20px;
+	cursor: pointer;
+	outline: none;
 }

@@ -2,8 +2,10 @@ let addTaskForm = document.forms.mainForm;
 let addTaskInput = addTaskForm.elements.task;
 let addTaskDateInput = addTaskForm.elements.date;
 let addTaskButton = document.querySelector('.add-button');
+
 let taskList = document.querySelector('.list');
 let todoBoard = document.querySelector('.todo-board');
+
 let modalConfirmWindow = document.querySelector('.modal-confirm');
 let modalAlertWindow = document.querySelector('.modal-alert');
 
@@ -19,7 +21,7 @@ function toLocalDate() {
 // Проверка на пустые поля
 function getNoEmptyFields(object) {
 	for(let key in object) {
-		if (object[key] === '') return false;
+		if (object[key].value === '') return false;
 	}
 	return true;
 }
@@ -126,30 +128,48 @@ function openModalAlertWindow() {
 // Добавление задачи
 addTaskButton.addEventListener('click', function() {
 	let newTask = {
-		task: addTaskInput.value,
-		date: addTaskDateInput.value,
+		task: addTaskInput,
+		date: addTaskDateInput,
 	}
-
 	let check = getNoEmptyFields(newTask);
-
 	if(check) {
 		taskList.append(getTask());
 		addTaskInput.value = '';
 		addTaskDateInput.value = '';
-	} else alert('All fields must be filled out');
-	
+	} else {
+		document.querySelectorAll('input').forEach((item) => {
+			if(item.value === '') {
+				item.classList.add('empty-field');
+				item.nextElementSibling.classList.add('empty-field-label');
+			}
+		});
+	}
 });
+
+// Выделение незаполненного обязательного поля
+document.addEventListener('blur', function(event) {
+	if(event.target.tagName !== 'INPUT') {
+		return;
+	}
+	if(event.target.value === '') {
+		event.target.classList.add('empty-field');
+		event.target.nextElementSibling.classList.add('empty-field-label');
+	} else {
+		event.target.classList.remove('empty-field');
+		event.target.nextElementSibling.classList.remove('empty-field-label');
+	}
+}, true);
 
 // Удаление одной задачи либо всех задач из блока, вызов модального окна для подтверждения в блоке Doing
 document.addEventListener('click', function(event) {
 	if(!(event.target.classList.contains('delete-button') || event.target.classList.contains('close-icon'))) {
-		return false;
+		return;
 	} else if (event.target.closest('.board').classList.contains('doing-board')) {
 		let deleteTask;
 		let deleteAll;
 		event.target.classList.contains('delete-button') ? deleteAll = true : deleteTask = true;
 		if(event.target.closest('.board').children[1].children.length === 0) {
-			return false; 
+			return; 
 		} else {
 			openModalConfirmWindow().then(function(resolve) {
 				if(deleteAll) Array.from(event.target.previousElementSibling.children).forEach(item => item.remove());
@@ -170,10 +190,10 @@ document.addEventListener('click', function(event) {
 	}
 });
 
-// Перемещение задачи в следующий блок, ограничение на 5 задач в 'Doing'	
+// Перемещение задачи в следующий блок, ограничение на 5 задач в 'Doing'
 document.addEventListener('click', function() {
 	if(!event.target.classList.contains('remove-icon')) {
-		return false;
+		return;
 	}
 	let board = event.target.closest('.board');
 	if(board.classList.contains('todo-board') && board.nextElementSibling.children[1].children.length === 5) {
