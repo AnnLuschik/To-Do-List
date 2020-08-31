@@ -9,7 +9,15 @@
 	height: 100vh;
 	padding: 0 10px;
 	font-family: 'Roboto', sans-serif;
-	background: #F3F3F6;
+	/* background: #F3F3F6; */
+	background: #222429;
+}
+
+main {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding-top: 30px;
 }
 
 .inner {
@@ -17,12 +25,12 @@
 }
 
 h1 {
-	color: #575c63;
+	color: #FFFFFF;
 }
 
 h2 {
 	margin-bottom: 10px;
-	color: #575c63;
+	color: #FFFFFF;
 }
 
 input {
@@ -31,8 +39,13 @@ input {
 /*------------Main styles-----------------*/
 .add-task-board {
 	display: flex;
-	justify-content: flex-start;
+	justify-content: center;
+	align-items: center;
+	width: 75%;
 	margin-bottom: 20px;
+	background: #FFFFFF;
+	height: 100px;
+	border-radius: 50px;
 }
 
 .add-task-board__form {
@@ -47,6 +60,13 @@ input {
 	width: 70%;
 }
 
+.add-task-board__form input {
+	height: 35px;
+	border: 1px solid #555555;
+	border-radius: 15px;
+	outline: none;
+}
+
 .add-task-board__form div label {
 	position: absolute;
 	top: 20%;
@@ -54,6 +74,19 @@ input {
 	color: #555555;
 	opacity: 0.5;
 	cursor: text;
+}
+
+.add-button {
+	padding: 10px 40px;
+	font-weight: 700;
+	font-size: 16px;
+	color: #ffffff;
+	letter-spacing: 0.5px;
+	background: #E46472;
+	border: none;
+	border-radius: 20px;
+	outline: none;
+	cursor: pointer;
 }
 
 .task-input {
@@ -76,6 +109,7 @@ input {
 	display: flex;
 	justify-content: space-between;
 	width: 100%;
+	background: #222429;
 }
 
 .board {
@@ -95,10 +129,10 @@ input {
 	min-height: 100px;
 	max-height: auto;
 	margin-bottom: 10px;
-	padding: 5px;
+	padding: 5px 0 5px 15px;
 	color: #4C4D4F;
 	background: #ffffff;
-	border-radius: 2px;
+	border-radius: 20px;
 }
 
 .task__text {
@@ -189,12 +223,18 @@ input {
 
 }
 
-.delete-button,
-.add-button {
-	padding: 5px 10px;
+.delete-button {
+	padding: 10px 15px;
+	font-weight: 400;
 	font-size: 16px;
-	border: 1px solid #4BBF6B;
-	border-radius: 3px;
+	color: #ffffff;
+	letter-spacing: 0.5px;
+	background: #E15106;
+	/* border: 1px solid #4BBF6B; */
+	border: none;
+	border-radius: 15px;
+	outline: none;
+	cursor: pointer;
 }
 
 .modal {
@@ -235,8 +275,8 @@ input {
 	padding: 45px 20px;
 }
 
-.button-container__confirm,
-.button-container__cancel {
+.button__confirm,
+.button__cancel {
 	min-width: 75px;
 	padding: 5px 10px;
 }
