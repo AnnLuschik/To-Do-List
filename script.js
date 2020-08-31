@@ -10,6 +10,12 @@ let modalAlertWindow = document.querySelector('.modal-alert');
 // Установка минимальной даты в поле ввода
 document.querySelector('.date-input').min = new Date().toISOString().split('T')[0];
 
+// Перевод даты в формат dd.mm.yyyy
+function toLocalDate() {
+	let localDate = addTaskDateInput.value.split('-');
+	return localDate.reverse().join('.');
+}
+
 // Проверка на пустые поля
 function getNoEmptyFields(object) {
 	for(let key in object) {
@@ -67,7 +73,7 @@ function createIconContainer() {
 function createTaskTimeElement() {
 	let taskDate = document.createElement('p');
 	taskDate.classList.add('task__time');
-	taskDate.append(document.createTextNode(addTaskDateInput.value));
+	taskDate.append(document.createTextNode(toLocalDate()));
 	return taskDate;
 }
 
@@ -123,12 +129,13 @@ addTaskButton.addEventListener('click', function() {
 	}
 
 	let check = getNoEmptyFields(newTask);
-	
+
 	if(check) {
 		taskList.append(getTask());
 		addTaskInput.value = '';
 		addTaskDateInput.value = '';
 	} else alert('All fields must be filled out');
+	
 });
 
 // Удаление одной задачи либо всех задач из блока, вызов модального окна для подтверждения в блоке Doing
