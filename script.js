@@ -7,7 +7,9 @@ let todoBoard = document.querySelector('.todo-board');
 let modalConfirmWindow = document.querySelector('.modal-confirm');
 let modalAlertWindow = document.querySelector('.modal-alert');
 
-/*-----------------------------------------Functions------------------------------------------*/
+// Установка минимальной даты в поле ввода
+document.querySelector('.date-input').min = new Date().toISOString().split('T')[0];
+
 // Проверка на пустые поля
 function getNoEmptyFields(object) {
 	for(let key in object) {
@@ -84,7 +86,7 @@ function createTextContainer() {
 	return container;
 }
 
-// Добавить новую задачу
+// Создать новую задачу
 function getTask() {
 	let task = document.createElement('li');
 	task.classList.add('task');
@@ -175,3 +177,4 @@ document.addEventListener('click', function() {
 document.querySelector('.button__alert-confirm').addEventListener('click', function(event) {
 	event.target.closest('.modal').style.display = 'none';
 });
+
