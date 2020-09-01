@@ -41,7 +41,7 @@ function compareDate(date) {
 
 // Проверка на пустые поля
 function getNoEmptyFields(object) {
-	for(let key in object) {
+	for (let key in object) {
 		if (object[key].value === '') return false;
 	}
 	return true;
@@ -61,7 +61,7 @@ document.querySelectorAll('h2').forEach(item => createTaskNumber(item.firstEleme
 
 let mutationObserver = new MutationObserver(mutationList => {
 	mutationList.forEach(mutation => {
-		if(mutation.target.tagName === 'UL') {
+		if (mutation.target.tagName === 'UL') {
 			createTaskNumber(mutation.target.previousElementSibling.firstElementChild);
 		}
 	});
@@ -120,7 +120,7 @@ function getTask() {
 	let task = document.createElement('li');
 	task.classList.add('task');
 	task.append(createTextContainer());
-	task.append(createIconContainer());	
+	task.append(createIconContainer());
 	return task;
 }
 
@@ -128,13 +128,13 @@ function getTask() {
 function openModalConfirmWindow() {
 	modalConfirmWindow.style.display = 'flex';
 	document.querySelector('.fogging').style.display = 'block';
-	let promiseModal = new Promise(function(resolve, reject) {
-		modalConfirmWindow.addEventListener('click', function(event) {
-			if(event.target.classList.contains('button__confirm')) {
-				resolve (true);
-			} 
-			if(event.target.classList.contains('button__cancel')) {
-				reject (false);
+	let promiseModal = new Promise(function (resolve, reject) {
+		modalConfirmWindow.addEventListener('click', function (event) {
+			if (event.target.classList.contains('button__confirm')) {
+				resolve(true);
+			}
+			if (event.target.classList.contains('button__cancel')) {
+				reject(false);
 			}
 		});
 	});
@@ -152,17 +152,17 @@ function openModalChangeDateWindow() {
 	modalChangeWindow.style.display = 'flex';
 	document.querySelector('.fogging').style.display = 'block';
 
-	let promiseModal = new Promise(function(resolve, reject) {
-		modalChangeWindow.addEventListener('click', function(event) {
-			if(event.target.classList.contains('button__confirm')) {
-				if(changeDateInput.value === '') {
+	let promiseModal = new Promise(function (resolve, reject) {
+		modalChangeWindow.addEventListener('click', function (event) {
+			if (event.target.classList.contains('button__confirm')) {
+				if (changeDateInput.value === '') {
 					changeDateInput.classList.add('empty-field');
 				} else {
-					resolve (toLocalDate(changeDateInput));
+					resolve(toLocalDate(changeDateInput));
 				}
-			} 
-			if(event.target.classList.contains('button__cancel')) {
-				reject (false);
+			}
+			if (event.target.classList.contains('button__cancel')) {
+				reject(false);
 			}
 		});
 	});
@@ -173,23 +173,23 @@ function openModalChangeDateWindow() {
 function closeModalWindow(window) {
 	window.style.display = 'none';
 	document.querySelector('.fogging').style.display = 'none';
-	if(window.classList.contains('modal-change-date')) changeDateForm.reset();
+	if (window.classList.contains('modal-change-date')) changeDateForm.reset();
 }
 /*---------------------------------------------Events------------------------------*/
 // Добавление задачи
-addTaskButton.addEventListener('click', function() {
+addTaskButton.addEventListener('click', function () {
 	let newTask = {
 		task: addTaskInput,
 		date: addTaskDateInput,
 	}
 	let check = getNoEmptyFields(newTask);
-	if(check) {
+	if (check) {
 		taskList.append(getTask());
 		addTaskInput.value = '';
 		addTaskDateInput.value = '';
 	} else {
 		document.querySelectorAll('input').forEach((item) => {
-			if(item.value === '') {
+			if (item.value === '') {
 				item.classList.add('empty-field');
 				item.nextElementSibling.classList.add('empty-field-label');
 			}
@@ -198,11 +198,11 @@ addTaskButton.addEventListener('click', function() {
 });
 
 // Выделение незаполненного обязательного поля
-document.addEventListener('blur', function(event) {
-	if(!event.target.classList.contains('required-input')) {
+document.addEventListener('blur', function (event) {
+	if (!event.target.classList.contains('required-input')) {
 		return;
 	}
-	if(event.target.value === '') {
+	if (event.target.value === '') {
 		event.target.classList.add('empty-field');
 		event.target.nextElementSibling.classList.add('empty-field-label');
 	} else {
@@ -212,26 +212,26 @@ document.addEventListener('blur', function(event) {
 }, true);
 
 // Удаление одной задачи либо всех задач из блока, вызов модального окна для подтверждения в блоке Doing
-document.addEventListener('click', function(event) {
-	if(!(event.target.classList.contains('delete-button') || event.target.classList.contains('close-icon'))) {
+document.addEventListener('click', function (event) {
+	if (!(event.target.classList.contains('delete-button') || event.target.classList.contains('close-icon'))) {
 		return;
 	} else if (event.target.closest('.board').classList.contains('doing-board')) {
 		let deleteTask;
 		let deleteAll;
 		event.target.classList.contains('delete-button') ? deleteAll = true : deleteTask = true;
-		if(event.target.closest('.board').children[1].children.length === 0) {
-			return; 
+		if (event.target.closest('.board').children[1].children.length === 0) {
+			return;
 		} else {
-			openModalConfirmWindow().then(function(resolve) {
-				if(deleteAll) Array.from(event.target.previousElementSibling.children).forEach(item => item.remove());
-				if(deleteTask) event.target.closest('li').remove();
+			openModalConfirmWindow().then(function (resolve) {
+				if (deleteAll) Array.from(event.target.previousElementSibling.children).forEach(item => item.remove());
+				if (deleteTask) event.target.closest('li').remove();
 				closeModalWindow(modalConfirmWindow);
-			}, function(reject) {
+			}, function (reject) {
 				closeModalWindow(modalConfirmWindow);
 			});
 		}
 	} else {
-		if(event.target.classList.contains('delete-button')) {
+		if (event.target.classList.contains('delete-button')) {
 			Array.from(event.target.previousElementSibling.children).forEach(item => item.remove());
 		} else {
 			event.target.closest('li').remove();
@@ -241,21 +241,21 @@ document.addEventListener('click', function(event) {
 
 // Перемещение задачи в следующий блок, ограничение на 5 задач в 'Doing', вызов модального окна для изменения даты.
 // Если дата задания меньше текущей, она по умолчанию становится равна текущей
-document.addEventListener('click', function(event) {
-	if(!event.target.classList.contains('remove-icon')) {
+document.addEventListener('click', function (event) {
+	if (!event.target.classList.contains('remove-icon')) {
 		return;
 	}
 	let board = event.target.closest('.board');
 	let task = event.target.closest('.task');
-	if(board.classList.contains('todo-board') && board.nextElementSibling.children[1].children.length === 5) {
+	if (board.classList.contains('todo-board') && board.nextElementSibling.children[1].children.length === 5) {
 		openModalAlertWindow();
-	} else if(board.classList.contains('done-board')) {
-		openModalChangeDateWindow().then(function(resolve) {
+	} else if (board.classList.contains('done-board')) {
+		openModalChangeDateWindow().then(function (resolve) {
 			task.firstElementChild.firstElementChild.innerHTML = resolve;
 			board.parentElement.firstElementChild.children[1].append(task);
 			closeModalWindow(modalChangeWindow);
-		}, function(reject) {
-			if(!compareDate(task.firstElementChild.firstElementChild.innerHTML)) {
+		}, function (reject) {
+			if (!compareDate(task.firstElementChild.firstElementChild.innerHTML)) {
 				let today = new Date().toISOString().split('T')[0].split('-').reverse().join('.');
 				task.firstElementChild.firstElementChild.innerHTML = today;
 			}
@@ -267,6 +267,6 @@ document.addEventListener('click', function(event) {
 	}
 });
 
-document.querySelector('.button__alert-confirm').addEventListener('click', function(event) {
-	event.target.closest('.modal').style.display = 'none';
+document.querySelector('.button__alert-confirm').addEventListener('click', function (event) {
+	closeModalWindow(modalAlertWindow);
 });

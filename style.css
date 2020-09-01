@@ -332,7 +332,8 @@ input {
 }
 
 .button__confirm,
-.button__cancel {
+.button__cancel,
+.button__alert-confirm {
 	min-width: 75px;
 	padding: 10px 15px;
 
