@@ -1,3 +1,4 @@
+let content = document.querySelector('.content');
 let addTaskForm = document.forms.mainForm;
 let addTaskInput = addTaskForm.elements.task;
 let addTaskDateInput = addTaskForm.elements.date;
@@ -198,21 +199,23 @@ addTaskButton.addEventListener('click', function () {
 });
 
 // Выделение незаполненного обязательного поля
-document.addEventListener('blur', function (event) {
-	if (!event.target.classList.contains('required-input')) {
-		return;
-	}
-	if (event.target.value === '') {
-		event.target.classList.add('empty-field');
-		event.target.nextElementSibling.classList.add('empty-field-label');
-	} else {
-		event.target.classList.remove('empty-field');
-		event.target.nextElementSibling.classList.remove('empty-field-label');
-	}
-}, true);
+document.querySelectorAll('.required-input').forEach(item => {
+	item.addEventListener('blur', function (event) {
+		if (!event.target.classList.contains('required-input')) {
+			return;
+		}
+		if (event.target.value === '') {
+			event.target.classList.add('empty-field');
+			event.target.nextElementSibling.classList.add('empty-field-label');
+		} else {
+			event.target.classList.remove('empty-field');
+			event.target.nextElementSibling.classList.remove('empty-field-label');
+		}
+	}, true);
+});
 
 // Удаление одной задачи либо всех задач из блока, вызов модального окна для подтверждения в блоке Doing
-document.addEventListener('click', function (event) {
+content.addEventListener('click', function(event) {
 	if (!(event.target.classList.contains('delete-button') || event.target.classList.contains('close-icon'))) {
 		return;
 	} else if (event.target.closest('.board').classList.contains('doing-board')) {
@@ -241,7 +244,7 @@ document.addEventListener('click', function (event) {
 
 // Перемещение задачи в следующий блок, ограничение на 5 задач в 'Doing', вызов модального окна для изменения даты.
 // Если дата задания меньше текущей, она по умолчанию становится равна текущей
-document.addEventListener('click', function (event) {
+content.addEventListener('click', function (event) {
 	if (!event.target.classList.contains('remove-icon')) {
 		return;
 	}
