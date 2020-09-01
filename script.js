@@ -266,7 +266,3 @@ document.addEventListener('click', function (event) {
 		board.nextElementSibling.children[1].append(event.target.closest('.task'));
 	}
 });
-
-document.querySelector('.button__alert-confirm').addEventListener('click', function (event) {
-	closeModalWindow(modalAlertWindow);
-});
