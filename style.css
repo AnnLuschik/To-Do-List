@@ -12,21 +12,6 @@
 	background: #222429;
 }
 
-.fogging {
-	content: '';
-	position: fixed;
-	left: 0;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	display: none;
-	width: 100%;
-	height: 100%;
-	background: #000000;
-	opacity: 0.5;
-	z-index: 5;
-}
-
 main {
 	display: flex;
 	flex-direction: column;
@@ -47,15 +32,16 @@ h2 {
 	color: #FFFFFF;
 }
 
-/*------------Main styles-----------------*/
+/*------------Add Task Board-----------------*/
 .add-task-board {
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	width: 75%;
-	margin-bottom: 20px;
-	background: #FFFFFF;
 	height: 100px;
+	margin-bottom: 20px;
+
+	background: #FFFFFF;
 	border-radius: 50px;
 }
 
@@ -94,8 +80,10 @@ h2 {
 input {
 	height: 35px;
 	padding: 5px 10px;
+
 	font-size: 16px;
 	font-family: inherit;
+
 	border: 1px solid #555555;
 	border-radius: 15px;
 	outline: none;
@@ -123,10 +111,12 @@ input {
 
 .add-button {
 	padding: 10px 40px;
+
 	font-weight: 700;
 	font-size: 16px;
 	color: #ffffff;
 	letter-spacing: 0.5px;
+
 	background: #E46472;
 	border: none;
 	border-radius: 20px;
@@ -143,6 +133,7 @@ input {
 	background: #e04754;
 }
 
+/*------------Common board styles-----------------*/
 .content {
 	display: flex;
 	justify-content: space-between;
@@ -168,6 +159,7 @@ input {
 	max-height: auto;
 	margin-bottom: 10px;
 	padding: 5px 0 5px 15px;
+
 	color: #4C4D4F;
 	background: #ffffff;
 	border-radius: 20px;
@@ -201,6 +193,7 @@ input {
 	width: 25px;
 	height: 25px;
 	margin: 1px;
+
 	background: #ffffff;
 	border: none;
 	outline: none;
@@ -216,11 +209,13 @@ input {
 	position: absolute;
 	top: 50%;
 	left: 12.5%;
+
 	width: 20px;
 	height: 2px;
+
 	background: #4BBF6B;
-	transform: rotate(45deg);
 	border-radius: 2px;
+	transform: rotate(45deg);
 }
 
 .close-icon::after {
@@ -228,11 +223,13 @@ input {
 	position: absolute;
 	top: 50%;
 	left: 12.5%;
+
 	width: 20px;
 	height: 2px;
+
 	background: #4BBF6B;
-	transform: rotate(135deg);
 	border-radius: 2px;
+	transform: rotate(135deg);
 }
 
 .remove-icon::before {
@@ -240,8 +237,10 @@ input {
 	position: absolute;
 	top: calc(50% - 1px);
 	left: 2px;
+
 	width: 18px;
 	height: 2px;
+
 	background: #4BBF6B;
 	border-radius: 2px;
 }
@@ -251,22 +250,25 @@ input {
 	position: absolute;
 	top: 25%;
 	left: 25%;
+
 	width: 10px;
 	height: 10px;
+
 	border: 2px solid #4BBF6B;
 	border-bottom: none;
 	border-left: none;
 	border-radius: 2px;
 	transform: rotate(45deg);
-
 }
 
 .delete-button {
 	padding: 10px 15px;
+
 	font-weight: 400;
 	font-size: 16px;
 	color: #ffffff;
 	letter-spacing: 0.5px;
+
 	background: #E15106;
 	border: none;
 	border-radius: 15px;
@@ -274,13 +276,16 @@ input {
 	cursor: pointer;
 }
 
+/*------------Modal styles-----------------*/
 .modal {
 	position: absolute;
 	top: calc(50% - 100px);
 	left: calc(50% - 175px);
+
 	flex-direction: column;
 	width: 350px;
 	height: 200px;
+
 	font-size: 18px;
 	background-color: #fff;	
 	border: 1px solid #4BBF6B;
@@ -330,11 +335,30 @@ input {
 .button__cancel {
 	min-width: 75px;
 	padding: 10px 15px;
+
 	font-size: 16px;
 	color: #ffffff;
+
 	background: #E46472;
 	border: none;
 	border-radius: 20px;
 	cursor: pointer;
 	outline: none;
+}
+
+.fogging {
+	content: '';
+	position: fixed;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+
+	display: none;
+	width: 100%;
+	height: 100%;
+
+	background: #000000;
+	opacity: 0.5;
+	z-index: 5;
 }

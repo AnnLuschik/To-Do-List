@@ -240,7 +240,7 @@ document.addEventListener('click', function(event) {
 });
 
 // Перемещение задачи в следующий блок, ограничение на 5 задач в 'Doing', вызов модального окна для изменения даты.
-// Если дата задания меньше текущей, смена обязательна
+// Если дата задания меньше текущей, она по умолчанию становится равна текущей
 document.addEventListener('click', function(event) {
 	if(!event.target.classList.contains('remove-icon')) {
 		return;
@@ -251,13 +251,13 @@ document.addEventListener('click', function(event) {
 		openModalAlertWindow();
 	} else if(board.classList.contains('done-board')) {
 		openModalChangeDateWindow().then(function(resolve) {
-			task.firstElementChild.firstElementChild.innerHTML = `${resolve}`;
+			task.firstElementChild.firstElementChild.innerHTML = resolve;
 			board.parentElement.firstElementChild.children[1].append(task);
 			closeModalWindow(modalChangeWindow);
 		}, function(reject) {
 			if(!compareDate(task.firstElementChild.firstElementChild.innerHTML)) {
 				let today = new Date().toISOString().split('T')[0].split('-').reverse().join('.');
-				task.firstElementChild.firstElementChild.innerHTML = `${today}`;
+				task.firstElementChild.firstElementChild.innerHTML = today;
 			}
 			closeModalWindow(modalChangeWindow);
 			board.parentElement.firstElementChild.children[1].append(task);
@@ -270,4 +270,3 @@ document.addEventListener('click', function(event) {
 document.querySelector('.button__alert-confirm').addEventListener('click', function(event) {
 	event.target.closest('.modal').style.display = 'none';
 });
-
