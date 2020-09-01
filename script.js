@@ -266,3 +266,8 @@ document.addEventListener('click', function (event) {
 		board.nextElementSibling.children[1].append(event.target.closest('.task'));
 	}
 });
+
+// Закрытие модального окна с предупреждением о необходимости выполнить что-то, прежде чем добавлять шестую задачу
+document.querySelector('.button__alert-confirm').addEventListener('click', function (event) {
+	closeModalWindow(modalAlertWindow);
+});
