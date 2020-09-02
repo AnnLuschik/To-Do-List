@@ -259,26 +259,32 @@ content.addEventListener('click', function (event) {
 		return;
 	}
 	let board = event.target.closest('.board');
-	let task = event.target.closest('.task');
-	if (board.classList.contains('todo-board') && board.parentElement.querySelector('.doing-list').children.length === 5) {
+	// let task = event.target.closest('.task');
+	if(board.classList.contains('todo-board') && board.parentElement.querySelector('.doing-list').children.length === 5) {
 		openModalAlertWindow();
 	} else if (board.classList.contains('done-board')) {
-		openModalChangeDateWindow().then(function (resolve) {
-			task.querySelector('.task__time').innerHTML = resolve;
-			board.parentElement.querySelector('.todo-list').append(task);
-			closeModalWindow(modalChangeWindow);
-		}, function (reject) {
-			if (!compareDate(task.querySelector('.task__time').innerHTML)) {
-				let today = new Date().toISOString().split('T')[0].split('-').reverse().join('.');
-				task.querySelector('.task__time').innerHTML = today;
-			}
-			closeModalWindow(modalChangeWindow);
-			board.parentElement.querySelector('.todo-list').append(task);
+		openModalChangeDateWindow()
+		.then(resolve => {
+			removeTaskFromDoneAndChangeDate(resolve, event.target.closest('.task'));
+		})
+		.catch(reject => {
+			removeTaskFromDoneAndChangeDate(reject, event.target.closest('.task'));
 		});
 	} else {
 		board.nextElementSibling.querySelector('.list').append(event.target.closest('.task'));
 	}
 });
+
+function removeTaskFromDoneAndChangeDate(result, task) {
+	if (!compareDate(task.querySelector('.task__time').innerHTML) && !result) {
+		let today = new Date().toISOString().split('T')[0].split('-').reverse().join('.');
+		task.querySelector('.task__time').innerHTML = today;
+	} else if(result) {
+		task.querySelector('.task__time').innerHTML = result;
+	} 
+	task.closest('.content').querySelector('.todo-list').append(task);
+	closeModalWindow(modalChangeWindow);
+}
 
 // Закрытие модального окна с предупреждением о необходимости выполнить что-то, прежде чем добавлять шестую задачу
 document.querySelector('.button__alert-confirm').addEventListener('click', function (event) {
