@@ -204,8 +204,6 @@ content.addEventListener('click', function(event) {
 	}
 	let title = event.target.closest('.board').querySelector('h2').firstElementChild;
 	event.target.classList.contains('delete-button') ? deleteList(event.target.parentElement.querySelector('.list')) : deleteTask(event.target.closest('.task'));
-	// console.log(event.target.closest('.board'));
-	// createTaskNumber(title);
 });
 
 function deleteTask(task) {
