@@ -226,7 +226,9 @@ content.addEventListener('click', function(event) {
 			return;
 		} else {
 			openModalConfirmWindow().then(function (resolve) {
-				if (deleteAll) Array.from(event.target.previousElementSibling.children).forEach(item => item.remove());
+				if (deleteAll) {
+					event.target.previousElementSibling.innerHTML = '';
+				} 
 				if (deleteTask) event.target.closest('li').remove();
 				closeModalWindow(modalConfirmWindow);
 			}, function (reject) {
@@ -235,7 +237,7 @@ content.addEventListener('click', function(event) {
 		}
 	} else {
 		if (event.target.classList.contains('delete-button')) {
-			Array.from(event.target.previousElementSibling.children).forEach(item => item.remove());
+			event.target.previousElementSibling.innerHTML = '';
 		} else {
 			event.target.closest('li').remove();
 		}
