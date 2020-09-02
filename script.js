@@ -50,8 +50,7 @@ function isNoEmptyFields(object) {
 
 // Получение количества задач и запись в заголовок блока
 function getTaskNumber(list) {
-	let number = list.length;
-	return number;
+	return list.length;
 }
 
 function createTaskNumber(title) {
@@ -132,10 +131,10 @@ function openModalConfirmWindow() {
 	let promiseModal = new Promise(function (resolve, reject) {
 		modalConfirmWindow.addEventListener('click', function (event) {
 			if (event.target.classList.contains('button__confirm')) {
-				resolve(true);
+				resolve();
 			}
 			if (event.target.classList.contains('button__cancel')) {
-				reject(false);
+				reject();
 			}
 		});
 	});
@@ -163,7 +162,7 @@ function openModalChangeDateWindow() {
 				}
 			}
 			if (event.target.classList.contains('button__cancel')) {
-				reject(false);
+				reject();
 			}
 		});
 	});
