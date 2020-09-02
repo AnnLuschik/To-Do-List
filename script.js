@@ -7,9 +7,6 @@ let addTaskButton = document.querySelector('.add-button');
 let changeDateForm = document.forms.modalDateForm;
 let changeDateInput = changeDateForm.elements.dateInput;
 
-let taskList = document.querySelector('.list');
-let todoBoard = document.querySelector('.todo-board');
-
 let modalConfirmWindow = document.querySelector('.modal-confirm');
 let modalAlertWindow = document.querySelector('.modal-alert');
 let modalChangeWindow = document.querySelector('.modal-change-date');
@@ -48,31 +45,16 @@ function isNoEmptyFields(object) {
 	return true;
 }
 
-// Очистить поля формы
-
 // Получение количества задач и запись в заголовок блока
 function getTaskNumber(list) {
-	return list.length;
+	return list.children.length;
 }
 
 function createTaskNumber(title) {
-	title.innerHTML = getTaskNumber(title.parentElement.nextElementSibling.children);
+	title.innerHTML = getTaskNumber(title.closest('.board').querySelector('.list'));
 }
 
 document.querySelectorAll('h2').forEach(item => createTaskNumber(item.firstElementChild));
-
-let mutationObserver = new MutationObserver(mutationList => {
-	mutationList.forEach(mutation => {
-		if (mutation.target.tagName === 'UL') {
-			createTaskNumber(mutation.target.previousElementSibling.firstElementChild);
-		}
-	});
-});
-
-mutationObserver.observe(document.querySelector('.content'), {
-	childList: true,
-	subtree: true,
-});
 
 // Создание 'delete' и 'remove' кнопок
 function createDeleteIcon() {
@@ -186,7 +168,7 @@ addTaskButton.addEventListener('click', function () {
 	}
 	let check = isNoEmptyFields(newTask);
 	if (check) {
-		taskList.append(getTask());
+		document.querySelector('.todo-list').append(getTask());
 		addTaskForm.reset();
 	} else {
 		document.querySelectorAll('input').forEach((item) => {
@@ -196,6 +178,7 @@ addTaskButton.addEventListener('click', function () {
 			}
 		});
 	}
+	createTaskNumber(document.querySelector('.todo-board').querySelector('h2').firstElementChild);
 });
 
 // Выделение незаполненного обязательного поля
@@ -219,36 +202,45 @@ content.addEventListener('click', function(event) {
 	if (!(event.target.classList.contains('delete-button') || event.target.classList.contains('close-icon'))) {
 		return;
 	}
+	let title = event.target.closest('.board').querySelector('h2').firstElementChild;
 	event.target.classList.contains('delete-button') ? deleteList(event.target.parentElement.querySelector('.list')) : deleteTask(event.target.closest('.task'));
+	// console.log(event.target.closest('.board'));
+	// createTaskNumber(title);
 });
 
 function deleteTask(task) {
+	let title = task.closest('.board').querySelector('h2').firstElementChild
 	if(task.closest('.board').classList.contains('doing-board')){
 		openModalConfirmWindow()
 		.then(() => {
 			task.remove();
-			closeModalWindow(modalConfirmWindow)
+			createTaskNumber(title);
+			closeModalWindow(modalConfirmWindow);
 			})
 		.catch(() => {
 			closeModalWindow(modalConfirmWindow);
 		});
 	} else {
 		task.remove();
+		createTaskNumber(title);
 	}
 }
 
 function deleteList(list) {
+	let title = list.closest('.board').querySelector('h2').firstElementChild;
 	if(list.closest('.board').classList.contains('doing-board')) {
 		openModalConfirmWindow()
 		.then(() => {
 			list.innerHTML = '';
-			closeModalWindow(modalConfirmWindow)
+			createTaskNumber(title);
+			closeModalWindow(modalConfirmWindow);
 			})
 		.catch(() => {
 			closeModalWindow(modalConfirmWindow);
 		});
 	} else {
 		list.innerHTML = '';
+		createTaskNumber(title);
 	}
 }
 
@@ -259,7 +251,6 @@ content.addEventListener('click', function (event) {
 		return;
 	}
 	let board = event.target.closest('.board');
-	// let task = event.target.closest('.task');
 	if(board.classList.contains('todo-board') && board.parentElement.querySelector('.doing-list').children.length === 5) {
 		openModalAlertWindow();
 	} else if (board.classList.contains('done-board')) {
@@ -272,17 +263,23 @@ content.addEventListener('click', function (event) {
 		});
 	} else {
 		board.nextElementSibling.querySelector('.list').append(event.target.closest('.task'));
+		createTaskNumber(board.querySelector('h2').firstElementChild);
+		createTaskNumber(board.nextElementSibling.querySelector('h2').firstElementChild);
 	}
 });
 
 function removeTaskFromDoneAndChangeDate(result, task) {
+	let todoBoardTitle = task.closest('.content').querySelector('.todo-board').querySelector('h2').firstElementChild;
+	let currentBoardTitle = task.closest('.board').querySelector('h2').firstElementChild;
 	if (!compareDate(task.querySelector('.task__time').innerHTML) && !result) {
 		let today = new Date().toISOString().split('T')[0].split('-').reverse().join('.');
 		task.querySelector('.task__time').innerHTML = today;
 	} else if(result) {
 		task.querySelector('.task__time').innerHTML = result;
-	} 
+	}
 	task.closest('.content').querySelector('.todo-list').append(task);
+	createTaskNumber(currentBoardTitle);
+	createTaskNumber(todoBoardTitle);
 	closeModalWindow(modalChangeWindow);
 }
 
