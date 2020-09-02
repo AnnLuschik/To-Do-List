@@ -218,31 +218,39 @@ document.querySelectorAll('.required-input').forEach(item => {
 content.addEventListener('click', function(event) {
 	if (!(event.target.classList.contains('delete-button') || event.target.classList.contains('close-icon'))) {
 		return;
-	} else if (event.target.closest('.board').classList.contains('doing-board')) {
-		let deleteTask;
-		let deleteAll;
-		event.target.classList.contains('delete-button') ? deleteAll = true : deleteTask = true;
-		if (event.target.closest('.board').querySelector('.list').children.length === 0) {
-			return;
-		} else {
-			openModalConfirmWindow().then(function (resolve) {
-				if (deleteAll) {
-					event.target.previousElementSibling.innerHTML = '';
-				} 
-				if (deleteTask) event.target.closest('li').remove();
-				closeModalWindow(modalConfirmWindow);
-			}, function (reject) {
-				closeModalWindow(modalConfirmWindow);
-			});
-		}
-	} else {
-		if (event.target.classList.contains('delete-button')) {
-			event.target.previousElementSibling.innerHTML = '';
-		} else {
-			event.target.closest('li').remove();
-		}
 	}
+	event.target.classList.contains('delete-button') ? deleteList(event.target.parentElement.querySelector('.list')) : deleteTask(event.target.closest('.task'));
 });
+
+function deleteTask(task) {
+	if(task.closest('.board').classList.contains('doing-board')){
+		openModalConfirmWindow()
+		.then(() => {
+			task.remove();
+			closeModalWindow(modalConfirmWindow)
+			})
+		.catch(() => {
+			closeModalWindow(modalConfirmWindow);
+		});
+	} else {
+		task.remove();
+	}
+}
+
+function deleteList(list) {
+	if(list.closest('.board').classList.contains('doing-board')) {
+		openModalConfirmWindow()
+		.then(() => {
+			list.innerHTML = '';
+			closeModalWindow(modalConfirmWindow)
+			})
+		.catch(() => {
+			closeModalWindow(modalConfirmWindow);
+		});
+	} else {
+		list.innerHTML = '';
+	}
+}
 
 // Перемещение задачи в следующий блок, ограничение на 5 задач в 'Doing', вызов модального окна для изменения даты.
 // Если дата задания меньше текущей, она по умолчанию становится равна текущей
