@@ -206,10 +206,10 @@ document.querySelectorAll('.required-input').forEach(item => {
 		}
 		if (event.target.value === '') {
 			event.target.classList.add('empty-field');
-			event.target.nextElementSibling.classList.add('empty-field-label');
+			if(event.target.nextElementSibling) event.target.nextElementSibling.classList.add('empty-field-label');
 		} else {
 			event.target.classList.remove('empty-field');
-			event.target.nextElementSibling.classList.remove('empty-field-label');
+			if(event.target.nextElementSibling) event.target.nextElementSibling.classList.remove('empty-field-label');
 		}
 	}, true);
 });
@@ -222,7 +222,7 @@ content.addEventListener('click', function(event) {
 		let deleteTask;
 		let deleteAll;
 		event.target.classList.contains('delete-button') ? deleteAll = true : deleteTask = true;
-		if (event.target.closest('.board').children[1].children.length === 0) {
+		if (event.target.closest('.board').querySelector('.list').children.length === 0) {
 			return;
 		} else {
 			openModalConfirmWindow().then(function (resolve) {
@@ -250,23 +250,23 @@ content.addEventListener('click', function (event) {
 	}
 	let board = event.target.closest('.board');
 	let task = event.target.closest('.task');
-	if (board.classList.contains('todo-board') && board.nextElementSibling.children[1].children.length === 5) {
+	if (board.classList.contains('todo-board') && board.parentElement.querySelector('.doing-list').children.length === 5) {
 		openModalAlertWindow();
 	} else if (board.classList.contains('done-board')) {
 		openModalChangeDateWindow().then(function (resolve) {
-			task.firstElementChild.firstElementChild.innerHTML = resolve;
-			board.parentElement.firstElementChild.children[1].append(task);
+			task.querySelector('.task__time').innerHTML = resolve;
+			board.parentElement.querySelector('.todo-list').append(task);
 			closeModalWindow(modalChangeWindow);
 		}, function (reject) {
-			if (!compareDate(task.firstElementChild.firstElementChild.innerHTML)) {
+			if (!compareDate(task.querySelector('.task__time').innerHTML)) {
 				let today = new Date().toISOString().split('T')[0].split('-').reverse().join('.');
-				task.firstElementChild.firstElementChild.innerHTML = today;
+				task.querySelector('.task__time').innerHTML = today;
 			}
 			closeModalWindow(modalChangeWindow);
-			board.parentElement.firstElementChild.children[1].append(task);
+			board.parentElement.querySelector('.todo-list').append(task);
 		});
 	} else {
-		board.nextElementSibling.children[1].append(event.target.closest('.task'));
+		board.nextElementSibling.querySelector('.list').append(event.target.closest('.task'));
 	}
 });
 
