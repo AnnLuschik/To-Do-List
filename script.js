@@ -41,7 +41,7 @@ function compareDate(date) {
 }
 
 // Проверка на пустые поля
-function getNoEmptyFields(object) {
+function isNoEmptyFields(object) {
 	for (let key in object) {
 		if (object[key].value === '') return false;
 	}
@@ -183,7 +183,7 @@ addTaskButton.addEventListener('click', function () {
 		task: addTaskInput,
 		date: addTaskDateInput,
 	}
-	let check = getNoEmptyFields(newTask);
+	let check = isNoEmptyFields(newTask);
 	if (check) {
 		taskList.append(getTask());
 		addTaskInput.value = '';
