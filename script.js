@@ -48,6 +48,8 @@ function isNoEmptyFields(object) {
 	return true;
 }
 
+// Очистить поля формы
+
 // Получение количества задач и запись в заголовок блока
 function getTaskNumber(list) {
 	return list.length;
@@ -185,8 +187,7 @@ addTaskButton.addEventListener('click', function () {
 	let check = isNoEmptyFields(newTask);
 	if (check) {
 		taskList.append(getTask());
-		addTaskInput.value = '';
-		addTaskDateInput.value = '';
+		addTaskForm.reset();
 	} else {
 		document.querySelectorAll('input').forEach((item) => {
 			if (item.value === '') {
