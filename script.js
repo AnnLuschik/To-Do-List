@@ -194,7 +194,7 @@ document.querySelectorAll('.required-input').forEach(item => {
 			event.target.classList.remove('empty-field');
 			if(event.target.nextElementSibling) event.target.nextElementSibling.classList.remove('empty-field-label');
 		}
-	}, true);
+	});
 });
 
 // Удаление одной задачи либо всех задач из блока, вызов модального окна для подтверждения в блоке Doing
