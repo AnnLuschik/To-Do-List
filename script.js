@@ -17,7 +17,15 @@ let doneList = localStorage.getItem('done') ? JSON.parse(localStorage.getItem('d
 
 let id = localStorage.getItem('id') ? +localStorage.getItem('id') : 0;
 
-// localStorage.clear();
+//Сброс счётчика 
+function resetCounter() {
+	if(!todoList.length && !doingList.length && !doneList.length) {
+		id = 0;
+		localStorage.setItem('id', 0);
+	}
+}
+
+resetCounter();
 
 //Отрисовка хранящихся в LocalStorage задач
 for (let item of todoList) {
@@ -255,6 +263,7 @@ content.addEventListener('click', function(event) {
 	}
 	let title = event.target.closest('.board').querySelector('h2').firstElementChild;
 	event.target.classList.contains('delete-button') ? deleteList(event.target.parentElement.querySelector('.list')) : deleteTask(event.target.closest('.task'));
+	resetCounter();
 });
 
 function deleteTask(task) {
@@ -262,24 +271,39 @@ function deleteTask(task) {
 	if(task.closest('.board').classList.contains('doing-board')){
 		openModalConfirmWindow()
 		.then(() => {
+			deleteTaskFromStorage(task, doingList);
 			task.remove();
 			createTaskNumber(title);
-			closeModalWindow(modalConfirmWindow);
+			closeModalWindow(modalConfirmWindow);	
 			})
 		.catch(() => {
 			closeModalWindow(modalConfirmWindow);
 		});
 	} else {
+		if(task.closest('.board').classList.contains('todo-board')) {
+			deleteTaskFromStorage(task, todoList);
+		} else {
+			deleteTaskFromStorage(task, doneList);
+		}
 		task.remove();
 		createTaskNumber(title);
 	}
 }
 
+function deleteTaskFromStorage(task, taskList) {
+	let currentTaskIndex = taskList.findIndex(item => item.id == task.dataset.id);
+	taskList.splice(currentTaskIndex, 1);
+	let key = getStorageKeyForList(taskList);
+	addTaskListToStorage(key, taskList);
+}
+
 function deleteList(list) {
+	if(list.children.length === 0) return;
 	let title = list.closest('.board').querySelector('h2').firstElementChild;
 	if(list.closest('.board').classList.contains('doing-board')) {
 		openModalConfirmWindow()
 		.then(() => {
+			deleteListFromStorage(doingList);
 			list.innerHTML = '';
 			createTaskNumber(title);
 			closeModalWindow(modalConfirmWindow);
@@ -287,10 +311,38 @@ function deleteList(list) {
 		.catch(() => {
 			closeModalWindow(modalConfirmWindow);
 		});
+	} else if(list.closest('.board').classList.contains('todo-board')) {
+		deleteListFromStorage(todoList);
+		list.innerHTML = '';
+		createTaskNumber(title);
 	} else {
+		deleteListFromStorage(doneList);
 		list.innerHTML = '';
 		createTaskNumber(title);
 	}
+}
+
+function deleteListFromStorage(list) {
+	list.length = 0;
+	let key = getStorageKeyForList(list);
+	addTaskListToStorage(key, list);
+	resetCounter();
+}
+
+function getStorageKeyForList(list) {
+	let storageKey;
+	switch(list) {
+		case todoList: 
+			storageKey = 'todo';
+			break;
+		case doingList:
+			storageKey = 'doing';
+			break;
+		case doneList:
+			storageKey = 'done';
+			break;
+	}
+	return storageKey;
 }
 
 // Перемещение задачи в следующий блок, ограничение на 5 задач в 'Doing', вызов модального окна для изменения даты.
@@ -306,14 +358,12 @@ content.addEventListener('click', function (event) {
 		if(content.querySelector('.doing-list').children.length === 5) {
 			openModalAlertWindow();
 		} else {
-			removeTask(task, board);
-			let currentTaskIndex = todoList.findIndex(item => {
-				item.id === task.dataset.id;
-			});
+			let currentTaskIndex = todoList.findIndex(item => item.id == task.dataset.id);
 			todoList.splice(currentTaskIndex, 1);
 			doingList.push(getTaskData(task));
 			addTaskListToStorage('todo', todoList);
 			addTaskListToStorage('doing', doingList);
+			removeTask(task, board);
 		}
 	} else if(board.classList.contains('done-board')) {
 		openModalChangeDateWindow()
@@ -324,14 +374,12 @@ content.addEventListener('click', function (event) {
 			removeTaskFromDoneAndChangeDate(reject, task);	
 		});
 	} else {
-		removeTask(task, board);
-		let currentTaskIndex = doingList.findIndex(item => {
-			item.id === task.dataset.id;
-		});
+		let currentTaskIndex = doingList.findIndex(item => item.id == task.dataset.id);
 		doingList.splice(currentTaskIndex, 1);
 		doneList.push(getTaskData(task));
 		addTaskListToStorage('doing', doingList);
 		addTaskListToStorage('done', doneList);
+		removeTask(task, board);
 	}
 });
 
@@ -354,9 +402,7 @@ function removeTaskFromDoneAndChangeDate(result, task) {
 	createTaskNumber(currentBoardTitle);
 	createTaskNumber(todoBoardTitle);
 	closeModalWindow(modalChangeWindow);
-	let currentTaskIndex = doneList.findIndex(item => {
-		item.id === task.dataset.id;
-	});
+	let currentTaskIndex = doneList.findIndex(item => item.id == task.dataset.id)
 	doneList.splice(currentTaskIndex, 1);
 	todoList.push(getTaskData(task));
 	addTaskListToStorage('todo', todoList);
