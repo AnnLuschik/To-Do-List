@@ -1,15 +1,12 @@
+import {getTask} from "./domService.js";
+import {modalAlertWindow, modalChangeWindow, modalConfirmWindow} from "./modalService.js";
+import {openModalAlertWindow, openModalChangeDateWindow, openModalConfirmWindow, closeModalWindow} from "./modalService.js";
+
 const content = document.querySelector('.content');
 const addTaskForm = document.forms.mainForm;
 const addTaskInput = addTaskForm.elements.task;
 const addTaskDateInput = addTaskForm.elements.date;
 const addTaskButton = document.querySelector('.add-button');
-
-const changeDateForm = document.forms.modalDateForm;
-const changeDateInput = changeDateForm.elements.dateInput;
-
-const modalConfirmWindow = document.querySelector('.modal-confirm');
-const modalAlertWindow = document.querySelector('.modal-alert');
-const modalChangeWindow = document.querySelector('.modal-change-date');
 
 let todoList = localStorage.getItem('todo') ? JSON.parse(localStorage.getItem('todo')) : [];
 let doingList = localStorage.getItem('doing') ? JSON.parse(localStorage.getItem('doing')) : [];
@@ -49,12 +46,6 @@ document.querySelectorAll('input[type=date]').forEach(item => {
 	}
 	item.min = today.toISOString().split('T')[0];
 });
-
-// Перевод даты в формат dd.mm.yyyy
-function toLocalDate(date) {
-	let localDate = date.split('-');
-	return localDate.reverse().join('.');
-}
 
 // Создание объекта Date из заголовка задачи, корректировка по часовому поясу UTC+3
 function fromLocalDate(date) {
@@ -103,59 +94,6 @@ function createTaskNumber(title) {
 
 document.querySelectorAll('h2').forEach(item => createTaskNumber(item.firstElementChild));
 
-// Создание 'delete' и 'remove' кнопок
-function createDeleteIcon() {
-	let icon = document.createElement('button');
-	icon.classList.add('icon', 'close-icon');
-	return icon;
-}
-
-function createRemoveIcon() {
-	let icon = document.createElement('button');
-	icon.classList.add('icon', 'remove-icon');
-	return icon;
-}
-
-function createIconContainer() {
-	let container = document.createElement('div');
-	container.classList.add('icon-container');
-	container.append(createDeleteIcon(), createRemoveIcon());
-	return container;
-}
-
-// Создание текстовой части новой задачи
-function createTaskTimeElement(time) {
-	let taskDate = document.createElement('p');
-	taskDate.classList.add('task__time');
-	taskDate.append(document.createTextNode(toLocalDate(time)));
-	return taskDate;
-}
-
-function createTaskTextElement(text) {
-	let taskText = document.createElement('p');
-	taskText.classList.add('task__text');
-	taskText.append(document.createTextNode(text));
-	return taskText;
-}
-
-function createTextContainer(taskData) {
-	let container = document.createElement('div');
-	container.classList.add('text-container');
-	container.append(createTaskTimeElement(taskData.date));
-	container.append(createTaskTextElement(taskData.task));
-	return container;
-}
-
-// Создать новую задачу
-function getTask(taskData) {
-	let task = document.createElement('li');
-	task.classList.add('task');
-	task.setAttribute('data-id', taskData.id);
-	task.append(createTextContainer(taskData));
-	task.append(createIconContainer());
-	return task;
-}
-
 // Получить данные из задачи
 function getTaskData(currentTask) {
 	let taskData = {
@@ -166,57 +104,6 @@ function getTaskData(currentTask) {
 	return taskData;
 }
 
-// Открыть модальное окно для подтверждения удаления
-function openModalConfirmWindow() {
-	modalConfirmWindow.style.display = 'flex';
-	document.querySelector('.fogging').style.display = 'block';
-	let promiseModal = new Promise(function (resolve, reject) {
-		modalConfirmWindow.addEventListener('click', function (event) {
-			if (event.target.classList.contains('button__confirm')) {
-				resolve();
-			}
-			if (event.target.classList.contains('button__cancel')) {
-				reject();
-			}
-		});
-	});
-	return promiseModal;
-}
-
-// Открыть модальное окно с предупреждением о лимите в 5 задач в блоке DOING
-function openModalAlertWindow() {
-	modalAlertWindow.style.display = 'flex';
-	document.querySelector('.fogging').style.display = 'block';
-}
-
-// Открыть модальное окно для смены даты при переносе задачи из DONE в TO DO
-function openModalChangeDateWindow() {
-	modalChangeWindow.style.display = 'flex';
-	document.querySelector('.fogging').style.display = 'block';
-
-	let promiseModal = new Promise(function (resolve, reject) {
-		modalChangeWindow.addEventListener('click', function (event) {
-			if (event.target.classList.contains('button__confirm')) {
-				if (changeDateInput.value === '') {
-					changeDateInput.classList.add('empty-field');
-				} else {
-					resolve(toLocalDate(changeDateInput.value));
-				}
-			}
-			if (event.target.classList.contains('button__cancel')) {
-				reject();
-			}
-		});
-	});
-	return promiseModal;
-}
-
-// Закрыть модальное окно
-function closeModalWindow(window) {
-	window.style.display = 'none';
-	document.querySelector('.fogging').style.display = 'none';
-	if (window.classList.contains('modal-change-date')) changeDateForm.reset();
-}
 /*---------------------------------------------Events------------------------------*/
 // Добавление задачи
 addTaskButton.addEventListener('click', function () {
