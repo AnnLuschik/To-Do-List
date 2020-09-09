@@ -40,9 +40,14 @@ for (let item of doneList) {
 	document.querySelector('.done-list').append(getTask(item));
 }
 
-// Установка минимальной даты в поле ввода
+// Установка минимальной даты в поле ввода, корректировка по часовому поясу UTC+3
 document.querySelectorAll('input[type=date]').forEach(item => {
-	item.min = new Date().toISOString().split('T')[0];
+	let hoursNow = new Date().getHours();
+	let today = new Date();
+	if(hoursNow < 3) {
+		today.setHours(3);
+	}
+	item.min = today.toISOString().split('T')[0];
 });
 
 // Перевод даты в формат dd.mm.yyyy
@@ -51,14 +56,19 @@ function toLocalDate(date) {
 	return localDate.reverse().join('.');
 }
 
-// Перевод даты в формат yyyy-mm-dd
+// Создание объекта Date из заголовка задачи, корректировка по часовому поясу UTC+3
 function fromLocalDate(date) {
 	let newDate = new Date();
+	let hoursNow = new Date().getHours();
+	if(hoursNow < 3) {
+		newDate.setHours(3);
+	}
 	let currentDate = date.split('.');
 	newDate.setFullYear(currentDate[2], currentDate[1] - 1, currentDate[0]);
 	return newDate;
 }
 
+// Перевод даты в формат yyyy-mm-dd
 function fromLocalDateToString(date) {
 	return date.toISOString().split('T')[0];
 }
