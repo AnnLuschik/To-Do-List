@@ -1,4 +1,4 @@
-import {toLocalDate} from "./domService.js";
+import {toLocalDate} from "./dateUtilService.js";
 
 export const modalConfirmWindow = document.querySelector('.modal-confirm');
 export const modalAlertWindow = document.querySelector('.modal-alert');

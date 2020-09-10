@@ -1,6 +1,7 @@
 import {getTask} from "./domService.js";
 import {modalAlertWindow, modalChangeWindow, modalConfirmWindow} from "./modalService.js";
 import {openModalAlertWindow, openModalChangeDateWindow, openModalConfirmWindow, closeModalWindow} from "./modalService.js";
+import {compareDate, fromLocalDateToString, fromLocalDate} from "./dateUtilService.js";
 
 const content = document.querySelector('.content');
 const addTaskForm = document.forms.mainForm;
@@ -35,44 +36,6 @@ for (let item of doingList) {
 
 for (let item of doneList) {
 	document.querySelector('.done-list').append(getTask(item));
-}
-
-// Установка минимальной даты в поле ввода, корректировка по часовому поясу UTC+3
-document.querySelectorAll('input[type=date]').forEach(item => {
-	let hoursNow = new Date().getHours();
-	let today = new Date();
-	if(hoursNow < 3) {
-		today.setHours(3);
-	}
-	item.min = today.toISOString().split('T')[0];
-});
-
-// Создание объекта Date из заголовка задачи, корректировка по часовому поясу UTC+3
-function fromLocalDate(date) {
-	let newDate = new Date();
-	let hoursNow = new Date().getHours();
-	if(hoursNow < 3) {
-		newDate.setHours(3);
-	}
-	let currentDate = date.split('.');
-	newDate.setFullYear(currentDate[2], currentDate[1] - 1, currentDate[0]);
-	return newDate;
-}
-
-// Перевод даты в формат yyyy-mm-dd
-function fromLocalDateToString(date) {
-	return date.toISOString().split('T')[0];
-}
-
-// Сравнение двух дат
-function compareDate(date) {
-	let today = new Date();
-	let userDate = fromLocalDate(date);
-	if(userDate >= today) {
-		return true;
-	} else {
-		return false;
-	}
 }
 
 // Проверка на пустые поля
@@ -158,7 +121,6 @@ content.addEventListener('click', function(event) {
 	if (!(event.target.classList.contains('delete-button') || event.target.classList.contains('close-icon'))) {
 		return;
 	}
-	let title = event.target.closest('.board').querySelector('h2').firstElementChild;
 	event.target.classList.contains('delete-button') ? deleteList(event.target.parentElement.querySelector('.list')) : deleteTask(event.target.closest('.task'));
 	resetCounter();
 });
@@ -192,6 +154,7 @@ function deleteTaskFromStorage(task, taskList) {
 	taskList.splice(currentTaskIndex, 1);
 	let key = getStorageKeyForList(taskList);
 	addTaskListToStorage(key, taskList);
+	resetCounter();
 }
 
 function deleteList(list) {
@@ -245,7 +208,7 @@ function getStorageKeyForList(list) {
 // Перемещение задачи в следующий блок, ограничение на 5 задач в 'Doing', вызов модального окна для изменения даты.
 // Если дата задания меньше текущей, она по умолчанию становится равна текущей
 content.addEventListener('click', function (event) {
-	if (!event.target.classList.contains('remove-icon')) {
+	if (!event.target.classList.contains('move-icon')) {
 		return;
 	}
 	let board = event.target.closest('.board');
@@ -260,15 +223,15 @@ content.addEventListener('click', function (event) {
 			doingList.push(getTaskData(task));
 			addTaskListToStorage('todo', todoList);
 			addTaskListToStorage('doing', doingList);
-			removeTask(task, board);
+			moveTaskToTheList(task, board);
 		}
 	} else if(board.classList.contains('done-board')) {
 		openModalChangeDateWindow()
 		.then(resolve => {
-			removeTaskFromDoneAndChangeDate(resolve, task);
+			moveTaskFromDoneAndChangeDate(resolve, task);
 		})
 		.catch(reject => {
-			removeTaskFromDoneAndChangeDate(reject, task);	
+			moveTaskFromDoneAndChangeDate(reject, task);	
 		});
 	} else {
 		let currentTaskIndex = doingList.findIndex(item => item.id == task.dataset.id);
@@ -276,17 +239,17 @@ content.addEventListener('click', function (event) {
 		doneList.push(getTaskData(task));
 		addTaskListToStorage('doing', doingList);
 		addTaskListToStorage('done', doneList);
-		removeTask(task, board);
+		moveTaskToTheList(task, board);
 	}
 });
 
-function removeTask(task, board) {
+function moveTaskToTheList(task, board) {
 	board.nextElementSibling.querySelector('.list').append(task);
 	createTaskNumber(board.querySelector('h2').firstElementChild);
 	createTaskNumber(board.nextElementSibling.querySelector('h2').firstElementChild);
 }
 
-function removeTaskFromDoneAndChangeDate(result, task) {
+function moveTaskFromDoneAndChangeDate(result, task) {
 	let todoBoardTitle = content.querySelector('.todo-board').querySelector('h2').firstElementChild;
 	let currentBoardTitle = task.closest('.board').querySelector('h2').firstElementChild;
 	if (!compareDate(task.querySelector('.task__time').innerHTML) && !result) {

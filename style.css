@@ -232,7 +232,7 @@ input {
 	transform: rotate(135deg);
 }
 
-.remove-icon::before {
+.move-icon::before {
 	content: "";
 	position: absolute;
 	top: calc(50% - 1px);
@@ -245,7 +245,7 @@ input {
 	border-radius: 2px;
 }
 
-.remove-icon::after {
+.move-icon::after {
 	content: "";
 	position: absolute;
 	top: 25%;

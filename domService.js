@@ -1,3 +1,5 @@
+import {toLocalDate} from "./dateUtilService.js";
+
 // Создать новую задачу
 export function getTask(taskData) {
 	let task = document.createElement('li');
@@ -31,28 +33,22 @@ function createTextContainer(taskData) {
 	return container;
 }
 
-// Создание 'delete' и 'remove' кнопок
+// Создание 'delete' и 'move' кнопок
 function createDeleteIcon() {
 	let icon = document.createElement('button');
 	icon.classList.add('icon', 'close-icon');
 	return icon;
 }
 
-function createRemoveIcon() {
+function createMoveIcon() {
 	let icon = document.createElement('button');
-	icon.classList.add('icon', 'remove-icon');
+	icon.classList.add('icon', 'move-icon');
 	return icon;
 }
 
 function createIconContainer() {
 	let container = document.createElement('div');
 	container.classList.add('icon-container');
-	container.append(createDeleteIcon(), createRemoveIcon());
+	container.append(createDeleteIcon(), createMoveIcon());
 	return container;
-}
-
-// Перевод даты в формат dd.mm.yyyy
-export function toLocalDate(date) {
-	let localDate = date.split('-');
-	return localDate.reverse().join('.');
 }
