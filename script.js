@@ -9,9 +9,13 @@ const addTaskInput = addTaskForm.elements.task;
 const addTaskDateInput = addTaskForm.elements.date;
 const addTaskButton = document.querySelector('.add-button');
 
-let todoList = localStorage.getItem('todo') ? JSON.parse(localStorage.getItem('todo')) : [];
-let doingList = localStorage.getItem('doing') ? JSON.parse(localStorage.getItem('doing')) : [];
-let doneList = localStorage.getItem('done') ? JSON.parse(localStorage.getItem('done')) : [];
+const todoKey = 'todo';
+const doingKey = 'doing';
+const doneKey = 'done';
+
+let todoList = localStorage.getItem(todoKey) ? JSON.parse(localStorage.getItem(todoKey)) : [];
+let doingList = localStorage.getItem(doingKey) ? JSON.parse(localStorage.getItem(doingKey)) : [];
+let doneList = localStorage.getItem(doneKey) ? JSON.parse(localStorage.getItem(doneKey)) : [];
 
 let id = localStorage.getItem('id') ? +localStorage.getItem('id') : 0;
 
@@ -82,7 +86,7 @@ addTaskButton.addEventListener('click', function () {
 	let check = isNoEmptyFields(newTask);
 	if (check) {
 		todoList.push(newTask);
-		addTaskListToStorage('todo', todoList);
+		addTaskListToStorage(todoKey, todoList);
 		document.querySelector('.todo-list').append(getTask(newTask));
 		addTaskForm.reset();
 	} else {
@@ -193,13 +197,13 @@ function getStorageKeyForList(list) {
 	let storageKey;
 	switch(list) {
 		case todoList: 
-			storageKey = 'todo';
+			storageKey = todoKey;
 			break;
 		case doingList:
-			storageKey = 'doing';
+			storageKey = doingKey;
 			break;
 		case doneList:
-			storageKey = 'done';
+			storageKey = doneKey;
 			break;
 	}
 	return storageKey;
@@ -221,8 +225,8 @@ content.addEventListener('click', function (event) {
 			let currentTaskIndex = todoList.findIndex(item => item.id == task.dataset.id);
 			todoList.splice(currentTaskIndex, 1);
 			doingList.push(getTaskData(task));
-			addTaskListToStorage('todo', todoList);
-			addTaskListToStorage('doing', doingList);
+			addTaskListToStorage(todoKey, todoList);
+			addTaskListToStorage(doingKey, doingList);
 			moveTaskToTheList(task, board);
 		}
 	} else if(board.classList.contains('done-board')) {
@@ -237,8 +241,8 @@ content.addEventListener('click', function (event) {
 		let currentTaskIndex = doingList.findIndex(item => item.id == task.dataset.id);
 		doingList.splice(currentTaskIndex, 1);
 		doneList.push(getTaskData(task));
-		addTaskListToStorage('doing', doingList);
-		addTaskListToStorage('done', doneList);
+		addTaskListToStorage(doingKey, doingList);
+		addTaskListToStorage(doneKey, doneList);
 		moveTaskToTheList(task, board);
 	}
 });
@@ -265,8 +269,8 @@ function moveTaskFromDoneAndChangeDate(result, task) {
 	let currentTaskIndex = doneList.findIndex(item => item.id == task.dataset.id)
 	doneList.splice(currentTaskIndex, 1);
 	todoList.push(getTaskData(task));
-	addTaskListToStorage('todo', todoList);
-	addTaskListToStorage('done', doneList);
+	addTaskListToStorage(todoKey, todoList);
+	addTaskListToStorage(doneKey, doneList);
 }
 
 // Закрытие модального окна с предупреждением о необходимости выполнить что-то, прежде чем добавлять шестую задачу
