@@ -64,8 +64,8 @@ document.querySelectorAll('h2').forEach(item => createTaskNumber(item.firstEleme
 // Получить данные из задачи
 function getTaskData(currentTask) {
 	let taskData = {
-		task: currentTask.firstElementChild.lastElementChild.innerHTML,
-		date: fromLocalDateToString(fromLocalDate(currentTask.firstElementChild.firstElementChild.innerHTML)),
+		task: currentTask.querySelector('.task__text').innerHTML,
+		date: fromLocalDateToString(fromLocalDate(currentTask.querySelector('.task__time').innerHTML)),
 		id: currentTask.dataset.id,
 	}
 	return taskData;
