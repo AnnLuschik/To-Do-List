@@ -87,7 +87,18 @@ addTaskButton.addEventListener('click', function () {
 	if (check) {
 		todoList.push(newTask);
 		addTaskListToStorage(todoKey, todoList);
-		document.querySelector('.todo-list').append(getTask(newTask));
+		let taskElement = getTask(newTask);
+
+		taskElement.addEventListener('click', function(event) {
+			if(event.target.classList.contains('close-icon')) {
+				deleteTask(event.target.closest('.task'));
+				resetCounter();
+			} else if(event.target.classList.contains('move-icon')) {
+				moveTask(taskElement);
+			}
+		});
+
+		document.querySelector('.todo-list').append(taskElement);
 		addTaskForm.reset();
 	} else {
 		document.querySelectorAll('input').forEach((item) => {
@@ -120,13 +131,12 @@ document.querySelectorAll('.required-input').forEach(item => {
 	});
 });
 
-// Удаление одной задачи либо всех задач из блока, вызов модального окна для подтверждения в блоке Doing
-content.addEventListener('click', function(event) {
-	if (!(event.target.classList.contains('delete-button') || event.target.classList.contains('close-icon'))) {
-		return;
-	}
-	event.target.classList.contains('delete-button') ? deleteList(event.target.parentElement.querySelector('.list')) : deleteTask(event.target.closest('.task'));
-	resetCounter();
+// Удаление задачи, всех задач из блока, вызов модального окна для подтверждения в блоке Doing
+document.querySelectorAll('.delete-button').forEach(item => {
+	item.addEventListener('click', function(event) {
+		deleteList(event.target.parentElement.querySelector('.list'));
+		resetCounter();
+	});
 });
 
 function deleteTask(task) {
@@ -211,12 +221,8 @@ function getStorageKeyForList(list) {
 
 // Перемещение задачи в следующий блок, ограничение на 5 задач в 'Doing', вызов модального окна для изменения даты.
 // Если дата задания меньше текущей, она по умолчанию становится равна текущей
-content.addEventListener('click', function (event) {
-	if (!event.target.classList.contains('move-icon')) {
-		return;
-	}
-	let board = event.target.closest('.board');
-	let task = event.target.closest('.task');
+function moveTask(task) {
+	let board = task.closest('.board');
 
 	if(board.classList.contains('todo-board')) {
 		if(content.querySelector('.doing-list').children.length === 5) {
@@ -227,8 +233,9 @@ content.addEventListener('click', function (event) {
 			doingList.push(getTaskData(task));
 			addTaskListToStorage(todoKey, todoList);
 			addTaskListToStorage(doingKey, doingList);
-			moveTaskToTheList(task, board);
+			moveTaskToTheNextList(task, board);
 		}
+
 	} else if(board.classList.contains('done-board')) {
 		openModalChangeDateWindow()
 		.then(resolve => {
@@ -237,17 +244,18 @@ content.addEventListener('click', function (event) {
 		.catch(reject => {
 			moveTaskFromDoneAndChangeDate(reject, task);	
 		});
+		
 	} else {
 		let currentTaskIndex = doingList.findIndex(item => item.id == task.dataset.id);
 		doingList.splice(currentTaskIndex, 1);
 		doneList.push(getTaskData(task));
 		addTaskListToStorage(doingKey, doingList);
 		addTaskListToStorage(doneKey, doneList);
-		moveTaskToTheList(task, board);
+		moveTaskToTheNextList(task, board);
 	}
-});
+}
 
-function moveTaskToTheList(task, board) {
+function moveTaskToTheNextList(task, board) {
 	board.nextElementSibling.querySelector('.list').append(task);
 	createTaskNumber(board.querySelector('h2').firstElementChild);
 	createTaskNumber(board.nextElementSibling.querySelector('h2').firstElementChild);
