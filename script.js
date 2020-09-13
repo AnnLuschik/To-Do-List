@@ -17,18 +17,6 @@ let todoList = localStorage.getItem(todoKey) ? JSON.parse(localStorage.getItem(t
 let doingList = localStorage.getItem(doingKey) ? JSON.parse(localStorage.getItem(doingKey)) : [];
 let doneList = localStorage.getItem(doneKey) ? JSON.parse(localStorage.getItem(doneKey)) : [];
 
-let id = localStorage.getItem('id') ? +localStorage.getItem('id') : 0;
-
-//Сброс счётчика 
-function resetCounter() {
-	if(!todoList.length && !doingList.length && !doneList.length) {
-		id = 0;
-		localStorage.setItem('id', 0);
-	}
-}
-
-resetCounter();
-
 //Отрисовка хранящихся в LocalStorage задач
 for (let item of todoList) {
 	document.querySelector('.todo-list').append(getTask(item));
@@ -74,8 +62,7 @@ function getTaskData(currentTask) {
 /*---------------------------------------------Events------------------------------*/
 // Добавление задачи
 addTaskButton.addEventListener('click', function () {
-	id++;
-	localStorage.setItem('id', `${id}`);
+	let id = Math.random();
 
 	let newTask = {
 		task: addTaskInput.value,
@@ -92,7 +79,6 @@ addTaskButton.addEventListener('click', function () {
 		taskElement.addEventListener('click', function(event) {
 			if(event.target.classList.contains('close-icon')) {
 				deleteTask(event.target.closest('.task'));
-				resetCounter();
 			} else if(event.target.classList.contains('move-icon')) {
 				moveTask(taskElement);
 			}
@@ -135,7 +121,6 @@ document.querySelectorAll('.required-input').forEach(item => {
 document.querySelectorAll('.delete-button').forEach(item => {
 	item.addEventListener('click', function(event) {
 		deleteList(event.target.parentElement.querySelector('.list'));
-		resetCounter();
 	});
 });
 
@@ -168,7 +153,6 @@ function deleteTaskFromStorage(task, taskList) {
 	taskList.splice(currentTaskIndex, 1);
 	let key = getStorageKeyForList(taskList);
 	addTaskListToStorage(key, taskList);
-	resetCounter();
 }
 
 function deleteList(list) {
@@ -200,7 +184,6 @@ function deleteListFromStorage(list) {
 	list.length = 0;
 	let key = getStorageKeyForList(list);
 	addTaskListToStorage(key, list);
-	resetCounter();
 }
 
 function getStorageKeyForList(list) {
